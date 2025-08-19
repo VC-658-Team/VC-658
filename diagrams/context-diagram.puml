@@ -1,0 +1,17 @@
+@startuml
+title Context Diagram
+
+skinparam linetype ortho
+skinparam packageStyle rectangle
+
+
+package "App service" as app
+package "Apple Health" as health
+package "Sensor Manager" as sensor
+
+app -> health
+health -> app
+app -> sensor
+sensor -> app
+
+@enduml
