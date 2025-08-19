@@ -1,6 +1,6 @@
 @startuml Component Diagram
 title Component Diagram
-top to bottom direction
+
 skinparam linetype ortho
 skinparam packageStyle rectangle
 
@@ -25,6 +25,7 @@ appService --> notifications
 sensor --> processor
 processor --> storage
 processor --> appService
+processor --> interfaceManager
 storage --> processor
 processor --> interfaceManager
 interfaceManager --> interface
