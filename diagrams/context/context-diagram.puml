@@ -17,7 +17,6 @@ Rel_D(user, system, "Passively generates data")
 Rel_U(healthkit, system, "Updates stored information")
 Rel_U(coreMotion, system, "Provides motion-related data")
 Rel_U(locationMgr, system, "Use stored data to calculate base values")
-Rel_L(coreData, system, "Use stored data to calculate base values")
 
 
 @enduml
