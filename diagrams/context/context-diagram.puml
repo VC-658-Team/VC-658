@@ -1,0 +1,24 @@
+' https://github.com/plantuml-stdlib/C4-PlantUML?tab=readme-ov-file#getting-started
+' Useful library for creating C4 diagrams
+
+@startuml Context-diagram
+!include  https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
+
+
+Person(user, "User", )
+System_Ext(healthRepo, "Apple HealthKit", "Historical repository of health data")
+System_Ext(coreMotion, "Core Motion", "Reports motion-based data")
+System(locationMgr, "Location Manager", "Provides location-related data")
+
+System_Boundary(systemBoundary, "Fatigue Management System") {
+    System(system, "Fatigue Management System", "Calculates user fatigue")
+    SystemDb(coreData, "CoreData Device Storage", "System data and calculations")
+}
+Rel_D(user, system, "Passively generates data")
+Rel_U(healthRepo, system, "Updates stored information")
+Rel_U(coreMotion, system, "Provides motion-related data")
+Rel_U(locationMgr, system, "Use stored data to calculate base values")
+Rel_L(coreData, system, "Use stored data to calculate base values")
+
+
+@enduml
