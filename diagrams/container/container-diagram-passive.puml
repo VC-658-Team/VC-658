@@ -1,6 +1,7 @@
 @startuml Container-diagram-Passive-Input
-title "Passive Use of System"
 !include  https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+title "Passive Use of System"
 
 
 Person(user, "User", "Passively using the system")
@@ -13,7 +14,7 @@ System_Boundary(systemCont, "Fatigue Management System") {
     ContainerDb(coreData, "CoreData Device Storage", "System data and calculations")
 }
 
-Container_Ext(healthRepo, "Apple HealthKit", "Historical repository of health data")
+Container_Ext(healthkit, "Apple HealthKit", "Historical repository of health data")
 Container_Ext(coreMotion, "Core Motion", "Reports motion-based data")
 Container_Ext(locationMgr, "Location Manager", "provides location-related data")
 
@@ -26,10 +27,10 @@ Rel_U(coreData, data, "Provides data for calculations")
 
 
 ' External relations
-Rel_U(user, healthRepo, "Passively generates data")
+Rel_U(user, healthkit, "Passively generates data")
 Rel_U(user, coreMotion, "Passively generates data")
 Rel_U(user, locationMgr, "Passively generates data")
-Rel_U(healthRepo, data, "Provides health data")
+Rel_U(healthkit, data, "Provides health data")
 Rel_U(coreMotion, data, "Provides Motion data")
 Rel_U(locationMgr, data, "Provides health data")
 

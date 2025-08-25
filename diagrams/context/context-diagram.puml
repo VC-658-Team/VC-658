@@ -4,16 +4,17 @@
 @startuml Context-diagram
 !include  https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Context.puml
 
+title "Context Diagram
 
 Person(user, "User", )
-System_Ext(healthRepo, "Apple HealthKit", "Historical repository of health data")
+System_Ext(healthkit, "Apple HealthKit", "Historical repository of health data")
 System_Ext(coreMotion, "Core Motion", "Reports motion-based data")
 System(locationMgr, "Location Manager", "Provides location-related data")
 
 System(system, "Fatigue Management System", "Calculates user fatigue")
 
 Rel_D(user, system, "Passively generates data")
-Rel_U(healthRepo, system, "Updates stored information")
+Rel_U(healthkit, system, "Updates stored information")
 Rel_U(coreMotion, system, "Provides motion-related data")
 Rel_U(locationMgr, system, "Use stored data to calculate base values")
 Rel_L(coreData, system, "Use stored data to calculate base values")
