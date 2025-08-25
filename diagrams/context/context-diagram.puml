@@ -10,10 +10,8 @@ System_Ext(healthRepo, "Apple HealthKit", "Historical repository of health data"
 System_Ext(coreMotion, "Core Motion", "Reports motion-based data")
 System(locationMgr, "Location Manager", "Provides location-related data")
 
-System_Boundary(systemBoundary, "Fatigue Management System") {
-    System(system, "Fatigue Management System", "Calculates user fatigue")
-    SystemDb(coreData, "CoreData Device Storage", "System data and calculations")
-}
+System(system, "Fatigue Management System", "Calculates user fatigue")
+
 Rel_D(user, system, "Passively generates data")
 Rel_U(healthRepo, system, "Updates stored information")
 Rel_U(coreMotion, system, "Provides motion-related data")

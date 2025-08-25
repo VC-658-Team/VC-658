@@ -1,0 +1,38 @@
+@startuml Container-diagram-Passive-Input
+title "Passive Use of System"
+!include  https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+
+Person(user, "User", "Passively using the system")
+
+System_Boundary(systemCont, "Fatigue Management System") {
+    Container(app, "App Interface", "Provides interface to user") 
+    Container(data, "Data Controller", "Manages flow of data into system")
+    Container(fatigueProc, "Fatigue Processor", "Determines fatigue level")
+    Container(notifications, "Notification Service", "Provides notification to user")
+    ContainerDb(coreData, "CoreData Device Storage", "System data and calculations")
+}
+
+Container_Ext(healthRepo, "Apple HealthKit", "Historical repository of health data")
+Container_Ext(coreMotion, "Core Motion", "Reports motion-based data")
+Container_Ext(locationMgr, "Location Manager", "provides location-related data")
+
+' Internal relations
+Rel_U(data, app, "Provides data for interface")
+Rel(data, fatigueProc, "Provides data for calculations")
+Rel(fatigueProc, notifications, "Creates notification")
+Rel(fatigueProc, app, "Presents warning")
+Rel_U(coreData, data, "Provides data for calculations")
+
+
+' External relations
+Rel_U(user, healthRepo, "Passively generates data")
+Rel_U(user, coreMotion, "Passively generates data")
+Rel_U(user, locationMgr, "Passively generates data")
+Rel_U(healthRepo, data, "Provides health data")
+Rel_U(coreMotion, data, "Provides Motion data")
+Rel_U(locationMgr, data, "Provides health data")
+
+
+
+@enduml
