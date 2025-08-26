@@ -6,21 +6,21 @@ title "Data Controller Component Diagram"
 
 Container_Boundary(controller, "Data Controller") {
     Component(healthAdpt, "Health Adapter", "Communicates with HealthKit")
-    Component(locationAdpt, "Location Adapter", "Communicates with Location Manager")
+    Component(locationAdpt, "Location Adapter", "Communicates with Core Location")
     Component(MotionAdpt, "Motion Adapter", "Communicates with Core Motion")
     Component(dbGateway, "Database Manager", "Provides Interface for CoreData")
     Component(coordinator, "Data Coordinator", "Coordinates requests to adapters")
 }
 
 Component_Ext(healthkit, "Apple Healthkit", "Provides historical health data")
-Component_Ext(locationMgr, "Location Manager", "Provides Location data")
+Component_Ext(coreLocation, "Location Manager", "Provides Location data")
 Component_Ext(coreMotion, "Core Motion", "Provides motion data")
 Component_Ext(coreData, "CoreData Persistent Storage", "persistant storage for system")
 Component_Ext(fatigueProc, "Fatigue Processor", "Calculates Fatigue")
 
 ' External relations
 Rel_U(healthAdpt, healthkit, "Communicate with health repository")
-Rel_U(locationAdpt, locationMgr, "Gather location data")
+Rel_U(locationAdpt, coreLocation, "Gather location data")
 Rel_U(MotionAdpt, coreMotion, "Gather motion data")
 Rel_U(dbGateway, coreData, "Communicate with database")
 
