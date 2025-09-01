@@ -1,0 +1,18 @@
+@startuml interface-component-diagram
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+title "Interface Component Diagram"
+
+
+Container_Boundary(interface, "User Interface") {
+    Component(stats, "Health Statistics")
+    
+
+}
+
+Component_Ext(data, "Data Controller")
+Component_Ext(fatigue, "Fatigue Processor")
+
+
+
+@enduml

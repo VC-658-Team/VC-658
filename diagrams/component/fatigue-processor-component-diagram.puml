@@ -1,0 +1,18 @@
+@startuml interface-component-diagram
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+title "Fatigue Processor Component Diagram"
+
+
+Container_Boundary(processor, "Fatigue Processor") {
+    Component(stats, "Health Statistics")
+    Component(baselines, "Baseline Assignment")
+    Component(
+
+}
+
+Component_Ext(data, "Data Controller")
+
+
+
+@enduml

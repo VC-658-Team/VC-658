@@ -1,4 +1,4 @@
-@startuml component-diagram-data-controller
+@startuml data-controller-component-diagram
 !include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
 
 title "Data Controller Component Diagram"
