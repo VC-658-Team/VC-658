@@ -12,9 +12,9 @@ end note
 note right
 Weight factors by importance:
 - Sleep (40%)
-- HR/HRV (30%)
-- Activity (20%)
-- Environment (10%)
+- Heart rate(30%)
+-  Energy burned (15%)
+- Total steps (15%)
 end note
 
 :Compute Fatigue Score;
