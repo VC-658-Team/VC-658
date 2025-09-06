@@ -1,0 +1,34 @@
+@startuml Component Diagram
+title Component Diagram
+
+skinparam linetype ortho
+skinparam packageStyle rectangle
+
+package "Interface Layer" {
+    [Notifications Provider] as notifications
+    [User Interface] as interface
+
+}
+
+package "Background Service" {
+    [Interface Manager] as interfaceManager   
+    [Data Processor] as processor
+    [App Service] as appService    
+}
+    
+package "Sensor and Data Layer" { 
+    [Sensor Manager (Healthkit)] as sensor
+    [Local Storage (CoreData)] as storage
+}
+appService --> notifications
+
+sensor --> processor
+processor --> storage
+processor --> appService
+processor --> interfaceManager
+storage --> processor
+processor --> interfaceManager
+interfaceManager --> interface
+
+
+@enduml

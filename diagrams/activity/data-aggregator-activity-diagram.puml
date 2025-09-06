@@ -1,0 +1,46 @@
+@startuml data-aggregator-activity
+
+title "Data Agggregator Internal Workflow"
+
+start
+
+:Acquire Inputs;
+note right
+- Sleep data
+- RHR
+- total steps
+- active energy
+end note
+
+:Normalize Data;
+note right
+Convert raw values into standard ranges (0–1):
+- Sleep hours / 8
+- RHR / baseline
+- active energy / baseline 
+- total steps / baseline
+end note
+
+:Persist Results;
+note right
+Store in CoreData:
+Aggregated daily data
+- RHR
+- energy consumed
+- steps
+- sleep
+end note
+
+if (SleepAnalysis begun?) then (yes)
+  :Update baseline averages;
+endif
+:Provide Output;
+note right
+Pass results to:
+- App UI (charts, scores)
+- Fatigue Processor
+end note
+
+stop
+@enduml
+
