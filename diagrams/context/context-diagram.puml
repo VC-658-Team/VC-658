@@ -8,15 +8,25 @@ title "Context Diagram"
 
 Person(user, "User", )
 System_Ext(healthkit, "Apple HealthKit", "Historical repository of health data")
-System_Ext(coreMotion, "Core Motion", "Reports motion-based data")
-System(coreLocation, "Core Location", "Provides location-related data")
+System_Ext(coreMotion, "Core Motion", "Reports motion-related data")
+System_Ext(weatherkit, "Weather Kit", "Reports weather-related data")
+System_Ext(coreLocation, "Core Location", "Provides location-related data")
+
+System_Ext(background, "Background Refresh", "watchOS managed background tasks")
+System_Ext(notifications, "Notification Center", "Delivers local notifications to the user")
+
 
 System(system, "Fatigue Management System", "Calculates user fatigue")
 
 Rel_D(user, system, "Passively generates data")
-Rel_U(healthkit, system, "Updates stored information")
+Rel_U(healthkit, system, "Updates stored information / triggers system when samples arrive")
 Rel_U(coreMotion, system, "Provides motion-related data")
 Rel_U(coreLocation, system, "Use stored data to calculate base values")
+Rel_U(weatherkit, system, "Provides weather related data")
+
+Rel_R(background, system, "Wakes app every 15-30min when needed")
+Rel_R(system, notifications, "Sends fatigue alerts if threshold exceeded")
+Rel_U(notifications, user, "Displays alert on watch face")
 
 
 @enduml
