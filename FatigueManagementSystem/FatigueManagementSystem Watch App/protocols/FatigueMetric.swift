@@ -23,7 +23,7 @@ protocol FatigueMetric {
 }
 
 extension FatigueMetric {
-    var normalisedValue: Double {
+    func normalisedValue() -> Double {
         max(0, min(1 (rawValue - minValue) / (maxValue)))
     }
 }
