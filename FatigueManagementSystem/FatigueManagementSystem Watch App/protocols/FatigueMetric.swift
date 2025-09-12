@@ -20,13 +20,13 @@ protocol FatigueMetric {
 
     // Normalised value, between 0-1, of current level
     /* Example Implementation
-        return max(0, min(1, baseline / rawValuee))
+        return max(0, min(1, baseline / rawValue))
 
     */
     func normalisedValue(baseline: Double) -> Double
     
     // Used to calculate the baseline if it does not exist in local storage
-    func calculateBaseline() -> void
+    func calculateBaseline() -> Void
     
 }
 
