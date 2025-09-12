@@ -32,7 +32,7 @@ protocol FatigueMetric {
 
 extension FatigueMetric {
     func weightedScore() -> Double {
-        return normalisedValue() * weight
+        return normalisedValue(baseline) * weight
     }
     
 }
