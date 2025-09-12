@@ -23,7 +23,7 @@ protocol FatigueMetric {
         return max(0, min(1, baseline / rawValue))
 
     */
-    func normalisedValue(baseline: Double) -> Double
+    func normalisedValue() -> Double
     
     // Used to calculate the baseline if it does not exist in local storage
     func calculateBaseline() -> Void
@@ -32,7 +32,7 @@ protocol FatigueMetric {
 
 extension FatigueMetric {
     func weightedScore() -> Double {
-        return normalisedValue(baseline) * weight
+        return normalisedValue() * weight
     }
     
 }
