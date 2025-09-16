@@ -7,18 +7,8 @@
 
 import Foundation
 import HealthKit
-
+    
 class RestingHeartRateMetric: FatigueMetric {
-    func normalisedValue() -> Double {
-        <#code#>
-    }
-    
-    func calculateBaseline() {
-        <#code#>
-    }
-    
-    
-    
     let name = "restingheartrate"
     let weight: Double
     var baseline: Double
@@ -45,5 +35,7 @@ class RestingHeartRateMetric: FatigueMetric {
     private func getLatestRestingHeartRate(completion: @escaping (Double) -> Void) {
         guard let
     }
+    
 }
+    
 
