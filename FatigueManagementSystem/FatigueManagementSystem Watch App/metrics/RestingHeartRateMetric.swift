@@ -27,7 +27,6 @@ class RestingHeartRateMetric: FatigueMetric {
     }
     
     func getRawValue() {
-        getLatestRestingHearRate
             //bpm in self.rawValue = bpm
         }
         func calculateBaseline() {
