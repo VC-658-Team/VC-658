@@ -14,7 +14,7 @@ class FatigueCalculatorImp: FatigueCalculator {
         //Metrics.updateValue(value, forKey: key)
     }
     
-    func GetMetric(key: String) -> any FatigueMetric {
+    func GetMetric(key: String) -> FatigueMetric {
         return Metrics[key]!
     }
     
