@@ -1,14 +1,17 @@
 import Foundation
 
 class FatigueCalculatorImp: FatigueCalculator {
-    var Metrics: Dictionary<String, any FatigueMetric>
+    var Metrics: [String: FatigueMetric]
+    //var Metrics: Dictionary<String, any FatigueMetric>
     
     init() {
         Metrics = [:]
     }
     
-    func addMetric(key: String, value: any FatigueMetric) {
-        Metrics.updateValue(value, forKey: key)
+    func addMetric(key: String, value: FatigueMetric){
+        Metrics[key] = value
+    //func addMetric(key: String, value: any FatigueMetric) {
+        //Metrics.updateValue(value, forKey: key)
     }
     
     func GetMetric(key: String) -> any FatigueMetric {

@@ -40,6 +40,7 @@ struct ContentView: View {
         //let normalised = rhrMetric.normalisedValue()
         
         calculator.addMetric(key: rhrMetric, value: rhrMetric)
+        
         fatigueScore = calculator.getFatigueScore()
         
     }
