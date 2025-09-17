@@ -33,8 +33,17 @@ class RestingHeartRateMetric: FatigueMetric {
     }
     
     private func getLatestRestingHeartRate(completion: @escaping (Double) -> Void) {
-        guard let
+        guard let hrType = HKHealthStore.qualityType(forIdentifier: .restingHeartRate) else {
+            completion(0)
+            return
+        }
+
+        let sortDescriptor = NSSortDescriptor(key: HKSampleSortIdentifierEndDate, ascending: false)
+        let query = HKHealthStore(sampleType: hrType,predicate: nil, limit: 1,sortDescriptor: [sortDescriptor]) { (_, samples,error)} in
+
+        guard error 
     }
+
     
 }
     
