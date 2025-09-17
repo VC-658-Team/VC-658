@@ -20,8 +20,9 @@ class RestingHeartRateMetric: FatigueMetric {
         self.weight = weight;
         self.baseline = 60.0
     
+        self.rawValue = 65.0
+        self.healthStore = healthStore
         
-        getRawValue()
         
         
     }
