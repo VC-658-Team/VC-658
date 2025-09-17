@@ -5,8 +5,8 @@
 //  Created by Sukhman Kaur Kang  on 16/9/2025.
 //
 
-import Foundation
 import HealthKit
+
     
 class RestingHeartRateMetric: FatigueMetric {
     let name = "restingheartrate"
@@ -19,8 +19,7 @@ class RestingHeartRateMetric: FatigueMetric {
     init(weight: Double, healthStore: HKHealthStore) {
         self.weight = weight;
         self.baseline = 60.0
-        self.rawValue = 72.0
-        self.healthStore - healthStore
+    
         
         getRawValue()
         
