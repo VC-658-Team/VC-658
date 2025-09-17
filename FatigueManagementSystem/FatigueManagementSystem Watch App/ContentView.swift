@@ -37,7 +37,7 @@ struct ContentView: View {
         
         let rhrMetric = RestingHeartRateMetric(weight: 1.0, healthStore: healthStore, rawValue: restingHR)
         
-        let normalised =rhrMetric.normalisedValue()
+        let normalised = rhrMetric.normalisedValue()
         
         fatigueScore = Int(normalised * 100)
         
