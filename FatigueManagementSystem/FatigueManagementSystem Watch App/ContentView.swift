@@ -35,11 +35,11 @@ struct ContentView: View {
     func testRestingHRMetric() {
         let healthStore = HKHealthStore()
         
-        let rhrMetric = RestingHeartRateMetric(weight: 1.0, healthStore: healthStore, rawValue: 75.0)
+        let rhrMetric = RestingHeartRateMetric(weight: 1.0, healthStore: healthStore, rawValue: restingHR)
         
         let normalised = rhrMetric.normalisedValue()
         
-        fatigueScore = calculator.getFatigueScore()
+        fatigueScore = Int(normalised * 100)
         
     }
 }
