@@ -35,7 +35,7 @@ struct ContentView: View {
     func testRestingHRMetric() {
         let healthStore = HKHealthStore()
         
-        let rhrMetric = RestingHeartRateMetric(weight: 1.0, healthStore: healthStore, rawValue: restingHR)
+        let rhrMetric = RestingHeartRateMetric(weight: 1.0, healthStore: healthStore)
         
         let normalised = rhrMetric.normalisedValue()
         
