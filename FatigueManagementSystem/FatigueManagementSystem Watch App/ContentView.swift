@@ -21,7 +21,7 @@ struct ContentView: View {
             Text("Fatigue Score: \(fatigueScore)")
                 .font(.largeTitle)
                 .padding()
-            //Image(systemName: "globe")
+            //Image(systemName: "globe")  initial project hello world settings
               //  .imageScale(.large)
                 //.foregroundStyle(.tint)
             //Text("Hello, world!")
@@ -34,12 +34,10 @@ struct ContentView: View {
     
     func testRestingHRMetric() {
         let healthStore = HKHealthStore()
-        let calculator = FatigueCalculatorImp()
+        
         let rhrMetric = RestingHeartRateMetric(weight: 1.0, healthStore: healthStore, rawValue: 75.0)
         
-        //let normalised = rhrMetric.normalisedValue()
-        
-        calculator.addMetric(key: rhrMetric, value: rhrMetric)
+        let normalised = rhrMetric.normalisedValue()
         
         fatigueScore = calculator.getFatigueScore()
         

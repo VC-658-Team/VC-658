@@ -16,10 +16,10 @@ class RestingHeartRateMetric: FatigueMetric {
     
     let healthStore: HKHealthStore
     
-    init(weight: Double, healthStore: HKHealthStore, rawValue: Double = 65.0) {
+    init(weight: Double, healthStore: HKHealthStore) {
         self.weight = weight;
         self.baseline = 60.0
-        self.rawValue = rawValue
+        self.rawValue = 65.0
         self.healthStore = healthStore
         
         //getRawValue()
