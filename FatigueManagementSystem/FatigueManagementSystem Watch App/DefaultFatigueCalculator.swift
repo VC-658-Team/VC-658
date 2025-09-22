@@ -3,19 +3,23 @@ import Foundation
 class FatigueCalculatorImp: FatigueCalculator {
     var Metrics: Dictionary<String, any FatigueMetric>
     
+    // Store metrics as a key-value pair dictionary
     init() {
         Metrics = [:]
     }
     
+    // Add metric to dictionary using key parameter
     func addMetric(key: String, value: any FatigueMetric) {
         Metrics.updateValue(value, forKey: key)
     }
     
+    // Return selected metric using key parameter
     func GetMetric(key: String) -> any FatigueMetric {
         return Metrics[key]!
     }
     
     
+    // Calculate fatigue score
     func getFatigueScore() -> Int {
         let allMetrics = Array(Metrics.values)
         
