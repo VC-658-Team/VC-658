@@ -1,6 +1,6 @@
 import Foundation
 
-class FatigueCalculatorImp: FatigueCalculator {
+class DefaultFatigueCalculator: FatigueCalculator {
     var Metrics: Dictionary<String, any FatigueMetric>
     
     // Store metrics as a key-value pair dictionary
