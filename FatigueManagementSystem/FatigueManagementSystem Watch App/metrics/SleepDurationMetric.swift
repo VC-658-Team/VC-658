@@ -29,9 +29,9 @@ class SleepDurationMetric: FatigueMetric {
     func getRawValue() {
         self.rawValue = 1.0
         
-//        self.getLastSleepSample { seconds in
-//            self.rawValue = seconds / 3600
-//        }
+        self.getLastSleepSample { seconds in
+            self.rawValue = seconds / 3600
+        }
     }
     
     func getLastSleepSample(completion: @escaping (TimeInterval) -> Void) {
@@ -75,6 +75,7 @@ class SleepDurationMetric: FatigueMetric {
     }
     
     func normalisedValue() -> Double {
+        print(rawValue)
         let val = (baseline - rawValue) / baseline
         return max(0, min(1, val))
     }

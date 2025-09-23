@@ -22,7 +22,10 @@ class FatigueModel: ObservableObject {
     }
     
     func getSleepString() -> String {
-        let hours = Int(calculator.Metrics["sleep"]!.rawValue)
+        guard let sleepMetric = calculator.Metrics["sleep"] else {
+            return ""
+        }
+        let hours = Int(sleepMetric.rawValue)
         let remaingSeconds = hours % 3600
         let minutes = remaingSeconds / 60
         return "\(hours)hrs \(minutes)mins"
@@ -56,9 +59,16 @@ class FatigueModel: ObservableObject {
                 print("Healthkit authorization errorL \(error.localizedDescription)")
             }
             else {
-                self.calculator.addMetric(key: "sleep",
-                                          value: SleepDurationMetric(weight: 4.0, healthStore: self.healthstore))
-                self.authorised = true
+                
+                
+                
+                DispatchQueue.main.async {
+                    self.calculator.addMetric(key: "sleep",
+                                              value: SleepDurationMetric(weight: 4.0, healthStore: self.healthstore))
+                    self.authorised = true
+                    
+                    
+                }
             }
         }
     }

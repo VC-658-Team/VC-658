@@ -103,9 +103,10 @@ struct ContentView: View {
     var body: some View {
         NavigationStack {
             
-            if !viewModel.authorised {
-                Text("fetching data")
-            } else{
+//            if !viewModel.authorised {
+            
+//            Text("fetching data")
+            if (true){
                 VStack(spacing: 7) {
                     // MARK: - Header with Settings Button
                     HStack {
