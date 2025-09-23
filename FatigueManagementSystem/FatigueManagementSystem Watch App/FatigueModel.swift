@@ -61,7 +61,7 @@ class FatigueModel: ObservableObject {
             else {
                 
                 
-                
+                // works 
                 DispatchQueue.main.async {
                     self.calculator.addMetric(key: "sleep",
                                               value: SleepDurationMetric(weight: 4.0, healthStore: self.healthstore))
