@@ -50,7 +50,7 @@ class FatigueModel: ObservableObject {
         
         // Healthkit authorisation
         let readTypes: Set<HKObjectType> = [
-            HKQuantityType.quantityType(forIdentifier: . restingHeartRate)!,
+            HKQuantityType.quantityType(forIdentifier: .restingHeartRate)!,
             HKObjectType.categoryType(forIdentifier: .sleepAnalysis)!
         ]
         
@@ -65,6 +65,8 @@ class FatigueModel: ObservableObject {
                 DispatchQueue.main.async {
                     self.calculator.addMetric(key: "sleep",
                                               value: SleepDurationMetric(weight: 4.0, healthStore: self.healthstore))
+                    self.calculator.addMetric(key: "restingHR",
+                                              value: RestingHeartRateMetric(weight: 3.0, healthStore: self.healthstore))
                     self.authorised = true
                     
                     

@@ -13,20 +13,54 @@ class SleepDurationMetric: FatigueMetric {
     let name = "sleep"
     let weight: Double
     var baseline: Double
-    var rawValue: Double
+    var rawValue: Double = 0.0
     
     let healthStore: HKHealthStore
     
     init(weight: Double, healthStore: HKHealthStore) {
         self.weight = weight;
         self.baseline = 8.0
-        self.rawValue = 0.0
+        //self.rawValue = 0.0
         self.healthStore = healthStore
         
-        self.getRawValue()
+        fetchLastSleep { hours in
+            DispatchQueue.main.async {
+                self.rawValue = hours
+            }
+        }
     }
     
-    func getRawValue() {
+    private func fetchLastSleep(completion: @escaping (Double) -> Void) {
+        guard let sleepType = HKObjectType.categoryType(forIdentifier: .sleepAnalysis) else {
+            completion(0); return
+        }
+        
+        let calendar = Calendar.current
+        let now = Date()
+        let startOfDay = calendar.startOfDay(for: now.addingTimeInterval(-24 * 60 * 60))
+        let predicate = HKQuery.predicateForSamples(withStart: startOfDay, end: now)
+        
+        let query = HKSampleQuery(sampleType: sleepType, predicate: predicate, limit: HKObjectQueryNoLimit, sortDescriptors: nil) { _, samples, _ in
+            guard let samples = samples as? [HKCategorySample] else {
+                completion(0); return
+            }
+            
+            let sleepSamples = samples.filter { $0.value != HKCategoryValueSleepAnalysis.awake.rawValue }
+            
+            let duration = sleepSamples.reduce(0) { (sum, sample) in
+                sum + sample.endDate.timeIntervalSince(sample.startDate)
+            }
+            
+            let hours = duration / 3600.0
+            completion(hours)
+            
+            
+        }
+        
+        healthStore.execute(query)
+    }
+    //-------------------------------above testing
+    /*func getRawValue() {
         self.rawValue = 1.0
         
         self.getLastSleepSample { seconds in
@@ -67,7 +101,8 @@ class SleepDurationMetric: FatigueMetric {
         
         self.healthStore.execute(query)
     }
-    
+    */
+    //-------------------------------below testing
     func calculateBaseline() {
         // get historical data
         //else choose average value
@@ -75,9 +110,11 @@ class SleepDurationMetric: FatigueMetric {
     }
     
     func normalisedValue() -> Double {
-        print(rawValue)
-        let val = (baseline - rawValue) / baseline
-        return max(0, min(1, val))
+        let ratio = rawValue / baseline
+        return max(0, min(1, ratio))
+        //print(rawValue)
+        //let val = (baseline - rawValue) / baseline
+        //return max(0, min(1, val))
     }
     
 }
