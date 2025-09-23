@@ -6,12 +6,13 @@
 //
 
 import SwiftUI
-
+import HealthKit
 @main
 struct FatigueManagementSystem_Watch_AppApp: App {
     var body: some Scene {
-        WindowGroup {	
+        WindowGroup {
             ContentView()
         }
     }
 }
+

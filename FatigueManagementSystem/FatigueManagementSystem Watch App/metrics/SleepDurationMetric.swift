@@ -19,18 +19,19 @@ class SleepDurationMetric: FatigueMetric {
     
     init(weight: Double, healthStore: HKHealthStore) {
         self.weight = weight;
-        self.baseline = 70.0
-        self.rawValue = 65.0
+        self.baseline = 8.0
+        self.rawValue = 0.0
         self.healthStore = healthStore
         
-        getRawValue()
+        self.getRawValue()
     }
     
     func getRawValue() {
+        self.rawValue = 1.0
         
-        getLastSleepSample { seconds in
-            self.rawValue = seconds / 3600
-        }
+//        self.getLastSleepSample { seconds in
+//            self.rawValue = seconds / 3600
+//        }
     }
     
     func getLastSleepSample(completion: @escaping (TimeInterval) -> Void) {
@@ -70,11 +71,12 @@ class SleepDurationMetric: FatigueMetric {
     func calculateBaseline() {
         // get historical data
         //else choose average value
-        baseline = 70.0
+        baseline = 8.0
     }
     
     func normalisedValue() -> Double {
-        return max(0, min(1, rawValue / baseline))
+        let val = (baseline - rawValue) / baseline
+        return max(0, min(1, val))
     }
     
 }
