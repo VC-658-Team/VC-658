@@ -31,6 +31,16 @@ class FatigueModel: ObservableObject {
         return "\(hours)hrs \(minutes)mins"
     }
     
+    // adding restingheartrate string function
+    func getRestingHRString() -> String {
+        if let rhr = calculator.Metrics["restingHR"]?.rawValue, rhr > 0 {
+            return "\(Int(rhr)) bpm"
+        } else {
+            return "-- bpm"
+        }
+    }
+    
+    
     func getFatigueScore()-> Int {
         fatigueScore = calculator.getFatigueScore()
         if(fatigueScore > 80) {

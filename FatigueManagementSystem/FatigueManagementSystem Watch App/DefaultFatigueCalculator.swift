@@ -40,6 +40,11 @@ import UserNotifications
      func getFatigueScore() -> Int {
          let allMetrics = Array(Metrics.values)
          
+         //fixing the normalised values
+         for metric in allMetrics {
+             print("DEBUG: \(metric.name) raw=\(metric.rawValue), norm=\(metric.normalisedValue())")
+         }
+         
          let totalWeight = allMetrics.map { $0.weight }.reduce(0, +)
          guard totalWeight > 0 else { return 0}
          let weightedTotal = allMetrics.map { $0.weightedScore()}.reduce(0, +)

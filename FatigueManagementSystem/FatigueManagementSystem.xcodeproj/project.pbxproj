@@ -55,9 +55,22 @@
 		18C871532E667BD500D99233 /* FatigueManagementSystem Watch AppUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "FatigueManagementSystem Watch AppUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		D7CA872C2E837C8100FCF0A7 /* Exceptions for "FatigueManagementSystem Watch App" folder in "FatigueManagementSystem Watch App" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				"FatigueManagementSystem-Watch-App-Info.plist",
+			);
+			target = 18C871392E667BD300D99233 /* FatigueManagementSystem Watch App */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		18C8713E2E667BD300D99233 /* FatigueManagementSystem Watch App */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				D7CA872C2E837C8100FCF0A7 /* Exceptions for "FatigueManagementSystem Watch App" folder in "FatigueManagementSystem Watch App" target */,
+			);
 			path = "FatigueManagementSystem Watch App";
 			sourceTree = "<group>";
 		};
@@ -457,9 +470,11 @@
 				DEVELOPMENT_TEAM = 34AHYCFT5R;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "FatigueManagementSystem-Watch-App-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = FatigueManagementSystem;
 				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "This will read the resting heart rate to calculate the fatigue.";
+				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "to update data in heakthkit";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_WKWatchOnly = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -491,9 +506,11 @@
 				DEVELOPMENT_TEAM = 34AHYCFT5R;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "FatigueManagementSystem-Watch-App-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = FatigueManagementSystem;
 				INFOPLIST_KEY_LSApplicationCategoryType = "";
 				INFOPLIST_KEY_NSHealthShareUsageDescription = "This will read the resting heart rate to calculate the fatigue.";
+				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "to update data in heakthkit";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_WKWatchOnly = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
