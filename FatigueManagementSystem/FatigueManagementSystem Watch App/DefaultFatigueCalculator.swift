@@ -42,7 +42,7 @@ import UserNotifications
          
          //fixing the normalised values
          for metric in allMetrics {
-             print("DEBUG: \(metric.name) raw=\(metric.rawValue), norm=\(metric.normalisedValue())")
+             print("Values: \(metric.name) raw=\(metric.rawValue), norm=\(metric.normalisedValue())")
          }
          
          let totalWeight = allMetrics.map { $0.weight }.reduce(0, +)
