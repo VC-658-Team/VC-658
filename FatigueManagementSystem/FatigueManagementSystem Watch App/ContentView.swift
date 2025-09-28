@@ -165,7 +165,7 @@ struct ContentView: View {
                 .onAppear {
                     viewModel.requestHealthkitAuthorization()
                     // This timer fires every 2 seconds to simulate live data updates
-                    Timer.scheduledTimer(withTimeInterval: 3.0, repeats: true) { _ in
+                    Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
                         // 'withAnimation' makes the change smooth instead of sudden
                         withAnimation(.easeInOut(duration: 1.0)) {
 //                            let newStressValue = Int.random(in: 10...100)

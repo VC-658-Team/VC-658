@@ -110,8 +110,8 @@ class SleepDurationMetric: FatigueMetric {
     }
     
     func normalisedValue() -> Double {
-        let ratio = rawValue / baseline
-        return max(0, min(1, ratio))
+        let defecit = max(0, rawValue - baseline)
+        return defecit / baseline
         //print(rawValue)
         //let val = (baseline - rawValue) / baseline
         //return max(0, min(1, val))

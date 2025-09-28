@@ -96,7 +96,6 @@ class FatigueModel: ObservableObject {
         let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
         let notificationCenter = UNUserNotificationCenter.current()
         notificationCenter.add(request)
-        print("made it")
     }
 }
 
