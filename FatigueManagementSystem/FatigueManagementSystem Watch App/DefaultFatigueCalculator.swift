@@ -16,8 +16,11 @@ import UserNotifications
 //}
 
 
+
  class DefaultFatigueCalculator: FatigueCalculator {
      var Metrics: Dictionary<String, any FatigueMetric>
+     
+     var FatigueScore: Int = 0
          
      // Store metrics as a key-value pair dictionary
      init() {
@@ -37,7 +40,7 @@ import UserNotifications
     
     
      // Calculate fatigue score
-     func getFatigueScore() -> Int {
+     func CalculateScore() {
          let allMetrics = Array(Metrics.values)
          
          //fixing the normalised values
@@ -46,9 +49,9 @@ import UserNotifications
          }
          
          let totalWeight = allMetrics.map { $0.weight }.reduce(0, +)
-         guard totalWeight > 0 else { return 0}
+         guard totalWeight > 0 else { return }
          let weightedTotal = allMetrics.map { $0.weightedScore()}.reduce(0, +)
-         return Int((weightedTotal / totalWeight) * 100)
+         FatigueScore = Int((weightedTotal / totalWeight) * 100)
      }
      
  }

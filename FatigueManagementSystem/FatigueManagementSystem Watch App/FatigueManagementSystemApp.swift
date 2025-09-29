@@ -9,6 +9,9 @@ import SwiftUI
 import HealthKit
 @main
 struct FatigueManagementSystem_Watch_AppApp: App {
+    init() {
+        FatigueService.service.start()
+    }
     var body: some Scene {
         WindowGroup {
             ContentView()
