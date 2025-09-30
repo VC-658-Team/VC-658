@@ -15,6 +15,7 @@ class RestingHeartRateMetric: FatigueMetric {
     let weight: Double
     var baseline: Double
     var rawValue: Double = 0.0 // this will be updated once we fetch data from the healthkit
+    //testing if manual raw value from xcode work and shows the fatigue score.
     
     let healthStore: HKHealthStore
     
