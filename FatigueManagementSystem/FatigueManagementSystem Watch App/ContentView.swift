@@ -152,8 +152,8 @@ struct ContentView: View {
                         MetricRowView(
                             iconName: "heart.fill",
                             iconColor: .red,
-                            title: viewModel.getRestingHRString())
-                        MetricRowView(iconName: "bed.double.fill", iconColor: .blue, title: viewModel.getSleepString())
+                            title: viewModel.restingHRString)
+                        MetricRowView(iconName: "bed.double.fill", iconColor: .blue, title: viewModel.sleepString)
                         MetricRowView(iconName: "clock.fill", iconColor: .yellow, title: "8h 15m")
                     }
                     .padding(.horizontal)
@@ -163,12 +163,15 @@ struct ContentView: View {
                 .padding(.top, 5)
                 // ADDED: This modifier runs code when the view first appears
                 .onAppear {
+                    viewModel.getFatigueScore()
+
                     // This timer fires every 2 seconds to simulate live data updates
                     Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
+                        
                         // 'withAnimation' makes the change smooth instead of sudden
                         withAnimation(.easeInOut(duration: 1.0)) {
 //                            let newStressValue = Int.random(in: 10...100)
-                            self.stressValue = viewModel.getFatigueScore()
+                            self.stressValue = viewModel.fatigueScore
                             // Convert the Int score (10-100) to a Double for the gauge (0.1-1.0)
                             self.stressLevel = Double(self.stressValue) / 100.0
                         }

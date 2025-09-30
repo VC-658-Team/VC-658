@@ -14,32 +14,37 @@ class FatigueModel: ObservableObject {
     @Published var authorised = false
     @Published var fatigueScore = 0
     
+    @Published var sleepString = "Score: 0"
+    @Published var restingHRString = "-- bpm"
+    
     let service = FatigueService.service
     init() {
             
     }
     
-    func getSleepString() -> String {
+    func SetSleepString() {
         guard let sleepMetric = service.calculator.Metrics["sleep"] else {
-            return ""
+            sleepString = "Score: O"
+            return
         }
-        let hours = Int(sleepMetric.rawValue)
-        let remaingSeconds = hours % 3600
-        let minutes = remaingSeconds / 60
-        return "\(hours)hrs \(minutes)mins"
+    
+        sleepString = "Score: \(Int(sleepMetric.rawValue * 100))"
     }
     
     // adding restingheartrate string function
-    func getRestingHRString() -> String {
+    func SetRestingHRString() {
         if let rhr = service.calculator.Metrics["restingHR"]?.rawValue, rhr > 0 {
-            return "\(Int(rhr)) bpm"
+            restingHRString = "\(Int(rhr)) bpm"
         } else {
-            return "-- bpm"
+            restingHRString = "-- bpm"
         }
     }
     
-    func getFatigueScore()-> Int {
-        return service.calculator.FatigueScore
+    func getFatigueScore() {
+        SetSleepString()
+        SetRestingHRString()
+        service.CalculateScore()
+        fatigueScore = service.calculator.FatigueScore
     }
     
     
