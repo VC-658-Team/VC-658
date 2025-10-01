@@ -87,7 +87,6 @@ class FatigueModel: ObservableObject {
                 
                 self.localDataManager.saveDailyFatigueScore(self.fatigueScore)
                 self.localDataManager.clearOldData()
-                
             }
         }
     }
