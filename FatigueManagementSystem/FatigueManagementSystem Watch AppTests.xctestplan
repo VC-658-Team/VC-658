@@ -1,0 +1,25 @@
+{
+  "configurations" : [
+    {
+      "id" : "393698C7-5CA8-40E8-8FA7-BCC0B0BEC8C7",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+
+  },
+  "testTargets" : [
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:FatigueManagementSystem.xcodeproj",
+        "identifier" : "18C871482E667BD500D99233",
+        "name" : "FatigueManagementSystem Watch AppTests"
+      }
+    }
+  ],
+  "version" : 1
+}
