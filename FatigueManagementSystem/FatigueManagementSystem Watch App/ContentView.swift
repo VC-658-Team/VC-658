@@ -85,7 +85,7 @@ import HealthKit
 
 
 struct ContentView: View {
-    @StateObject var viewModel = FatigueModel();
+    @StateObject private var viewModel: FatigueModel
     // CHANGED: Converted to @State variables to allow dynamic updates
     @State private var stressLevel: Double = 0.65
     @State private var stressValue: Int = 1
@@ -98,6 +98,10 @@ struct ContentView: View {
         } else {
             return .red
         }
+    }
+    
+    init(service: FatigueService) {
+        _viewModel = StateObject(wrappedValue: FatigueModel(service: service))
     }
     
     var body: some View {
@@ -161,19 +165,17 @@ struct ContentView: View {
                 // ADDED: This modifier runs code when the view first appears
                 .onAppear {
                     viewModel.getFatigueScore()
-
-                    // This timer fires every 2 seconds to simulate live data updates
-                    Timer.scheduledTimer(withTimeInterval: 5.0, repeats: true) { _ in
                         
-                        // 'withAnimation' makes the change smooth instead of sudden
-                        withAnimation(.easeInOut(duration: 1.0)) {
-//                            let newStressValue = Int.random(in: 10...100)
-                            self.stressValue = viewModel.fatigueScore
-                            // Convert the Int score (10-100) to a Double for the gauge (0.1-1.0)
-                            self.stressLevel = Double(self.stressValue) / 100.0
-                        }
+                }.onReceive(viewModel.$fatigueScore) { score in
+                    // 'withAnimation' makes the change smooth instead of sudden
+                    withAnimation(.easeInOut(duration: 1.0)) {
+                        //let newStressValue = Int.random(in: 10...100)
+                        self.stressValue = score
+                        // Convert the Int score (10-100) to a Double for the gauge (0.1-1.0)
+                        self.stressLevel = Double(self.stressValue) / 100.0
                     }
                 }
+                            
             }
         }
     }

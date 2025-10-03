@@ -43,6 +43,7 @@ import UserNotifications
      func CalculateScore(completion: @escaping () -> Void) {
          let allMetrics = Array(Metrics.values)
          guard !allMetrics.isEmpty else {
+             print("Failed")
              completion()
              return
              
@@ -72,6 +73,8 @@ import UserNotifications
              
              let weightedTotal = allMetrics.map { $0.weightedScore() }.reduce(0, +)
              self.FatigueScore = Int((weightedTotal / totalWeight) * 100)
+             print("[DEBUG] Finished CalculateScore, FatigueScore = \(self.FatigueScore)")
+
              completion()
          }
      }
