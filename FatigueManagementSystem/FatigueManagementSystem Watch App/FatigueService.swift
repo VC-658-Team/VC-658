@@ -8,28 +8,34 @@
 import HealthKit
 import UserNotifications
 
-
 class FatigueService {
-    static let service = FatigueService()
     private let healthstore = HKHealthStore()
     public var calculator = DefaultFatigueCalculator()
     private var notificationsAuthed: Bool = false;
     var authorised = false;
+    @Published var ready = false
     
-    private init() {
-    }
     
-    func start() {
+    func start(completion: @escaping (Bool) -> Void) {
         requestHKAuthorization { authorised in
             if authorised {
-                self.StartObservers()
+                // Check if notifications are enabled
+                // If not, will not block main flow
+                self.requestNotificationAuthorization { authorised in
+                    if authorised {
+                        self.notificationsAuthed = true
+                    }
+                }
+                    
+                // Start observers
+                // Set ready status if successful
+                self.StartObservers { success in
+                    self.ready = success;
+                    completion(success)
+                }
             } else {
                 print("Authorisation not granted")
-            }
-        }
-        requestNotificationAuthorization { authorised in
-            if authorised {
-                self.notificationsAuthed = true
+                
             }
         }
     }
@@ -72,63 +78,55 @@ class FatigueService {
             else {
                 //changing
                 DispatchQueue.main.async {
-                    let sleep = SleepDurationMetric(weight: 4.0, healthStore: self.healthstore)
-                    let rhr = RestingHeartRateMetric(weight: 3.0, healthStore: self.healthstore)
-                    let steps = StepsMetric(weight: 2.0, healthStore: self.healthstore)
-                    let calories = CaloriesMetric(weight: 1.5, healthStore: self.healthstore)
-                    
-                    self.calculator.addMetric(key: "sleep", value: sleep)
-                    self.calculator.addMetric(key: "resrtingHR", value: rhr)
-                    self.calculator.addMetric(key: "steps", value: steps)
-                    self.calculator.addMetric(key: "calories", value: calories)
-                    
-                    sleep.getRawValue {}
-                    rhr.getRawValue {}
-                    steps.getRawValue {}
-                    calories.getRawValue {}
-                    
+                    self.calculator.addMetric(key: "sleep",
+                                              value: SleepDurationMetric(weight: 4.0, healthStore: self.healthstore))
+                    self.calculator.addMetric(key: "restingHR",
+                                              value: RestingHeartRateMetric(weight: 3.0, healthStore: self.healthstore))
+                    self.calculator.addMetric(key: "steps",
+                                              value: StepsMetric(weight: 2.0, healthStore: self.healthstore))
+                    self.calculator.addMetric(key: "calories",
+                                              value: CaloriesMetric(weight: 1.5, healthStore: self.healthstore))
                     completion(success)
-                    
-                    
-                    //                    self.calculator.addMetric(key: "sleep",
-                    //                                              value: SleepDurationMetric(weight: 4.0, healthStore: self.healthstore))
-                    //                    self.calculator.addMetric(key: "restingHR",
-                    //                                              value: RestingHeartRateMetric(weight: 3.0, healthStore: self.healthstore))
-                    //                    self.calculator.addMetric(key: "steps",
-                    //                                              value: StepsMetric(weight: 2.0, healthStore: self.healthstore))
-                    //                    self.calculator.addMetric(key: "calories",
-                    //                                              value: CaloriesMetric(weight: 1.5, healthStore: self.healthstore))
-                    //                    completion(success)
-                    
                 }
             }
         }
     }
     
-    func StartObservers() {
-        guard let type = HKQuantityType.quantityType(forIdentifier: .restingHeartRate) else { return }
+    func StartObservers(completion: @escaping (Bool) -> Void) {
+        guard let type = HKQuantityType.quantityType(forIdentifier: .restingHeartRate) else {
+            completion(false)
+            return
+        }
         healthstore.enableBackgroundDelivery(for: type, frequency: .immediate) { success, error in
             if !success {
                 print("Failed to enable background deliver: \(String(describing: error))")
+                completion(false)
+                return
             }
         }
         
-        let query = HKObserverQuery(sampleType: type, predicate: nil) {_, completion, _ in
-            self.calculator.CalculateScore {
-                completion()
+        let query = HKObserverQuery(sampleType: type, predicate: nil) { _, completionHandler, error in
+            if let error = error {
+                print("Observer error: \(error)")
             }
+            
+            self.CalculateScore() {
+                completionHandler()
+            }
+            
         }
-        
-        healthstore.execute(query)
-        
+        self.healthstore.execute(query)
+
+        completion(true)
     }
     
-    func CalculateScore() {
+    func CalculateScore(completion: @escaping () -> Void) {
         calculator.CalculateScore { [weak self] in
             guard let self = self else { return }
             if(calculator.FatigueScore > 80 && notificationsAuthed) {
                 triggerNotification()
             }
+            completion()
         }
     }
     

@@ -24,6 +24,7 @@ class CaloriesMetric: FatigueMetric {
         
         self.getTodayCalories { [weak self] calories in
             self?.rawValue = calories
+            completion()
         }
     }
     

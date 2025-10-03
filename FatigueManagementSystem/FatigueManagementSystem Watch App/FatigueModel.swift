@@ -19,11 +19,11 @@ class FatigueModel: ObservableObject {
     @Published var stepsString = "0 steps"
     @Published var caloryString = "0 cal"
     
-    private let service = FatigueService.service
-    init() {
-        FatigueService.service.start()
-        getFatigueScore()
-            
+    private let service: FatigueService
+    
+    init(service: FatigueService) {
+        self.service = service
+
     }
     
     func SetSleepString() {
@@ -66,37 +66,22 @@ class FatigueModel: ObservableObject {
         caloryString = "\(calories) cal"
         return
     }
-    //making some changes to see if the values work
     func getFatigueScore() {
-        for metric in service.calculator.Metrics.values {
-            metric.getRawValue{
-                self.service.calculator.CalculateScore {
-                    DispatchQueue.main.async {
-                        self.fatigueScore = self.service.calculator.FatigueScore
-                        self.SetSleepString()
-                        self.SetRestingHRString()
-                        self.setStepsString()
-                        self.setCaloriesString()
-                    }
-                }
+        service.CalculateScore { [weak self] in
+            guard let self = self else { return }
+            DispatchQueue.main.async {
+                self.fatigueScore = self.service.calculator.FatigueScore
+
+                // TODO:  change to toString method for each metric instead
+                
+                self.SetSleepString()
+                self.SetRestingHRString()
+                self.setStepsString()
+                self.setCaloriesString()
             }
         }
-    
-//    func getFatigueScore() {
-//        service.calculator.CalculateScore { [weak self] in
-//           guard let self = self else {return }
-//            DispatchQueue.main.async {
-//                self.fatigueScore = self.service.calculator.FatigueScore
-//            }
-//        }
-        
-        // TODO: Maybe change to toString method for each metric instead
-        SetSleepString()
-        SetRestingHRString()
-        setStepsString()
-        setCaloriesString()
+     
     }
-
 }
 
 

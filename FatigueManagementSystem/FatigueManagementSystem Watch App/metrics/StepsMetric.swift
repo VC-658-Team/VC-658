@@ -24,6 +24,7 @@ class StepsMetric: FatigueMetric {
         
         self.getTodaySteps { [weak self] steps in
             self?.rawValue = Double(steps)
+            completion()
         }
     }
     
