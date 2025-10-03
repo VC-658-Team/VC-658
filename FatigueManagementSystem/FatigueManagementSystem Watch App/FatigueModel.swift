@@ -66,14 +66,29 @@ class FatigueModel: ObservableObject {
         caloryString = "\(calories) cal"
         return
     }
-    
+    //making some changes to see if the values work
     func getFatigueScore() {
-        service.calculator.CalculateScore { [weak self] in
-           guard let self = self else {return }
-            DispatchQueue.main.async {
-                self.fatigueScore = self.service.calculator.FatigueScore
+        for metric in service.calculator.Metrics.values {
+            metric.getRawValue{
+                self.service.calculator.CalculateScore {
+                    DispatchQueue.main.async {
+                        self.fatigueScore = self.service.calculator.FatigueScore
+                        self.SetSleepString()
+                        self.SetRestingHRString()
+                        self.setStepsString()
+                        self.setCaloriesString()
+                    }
+                }
             }
         }
+    
+//    func getFatigueScore() {
+//        service.calculator.CalculateScore { [weak self] in
+//           guard let self = self else {return }
+//            DispatchQueue.main.async {
+//                self.fatigueScore = self.service.calculator.FatigueScore
+//            }
+//        }
         
         // TODO: Maybe change to toString method for each metric instead
         SetSleepString()
