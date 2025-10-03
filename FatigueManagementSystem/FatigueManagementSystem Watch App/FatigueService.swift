@@ -61,7 +61,9 @@ class FatigueService {
         
         let readTypes: Set<HKObjectType> = [
             rhrType,
-            sleepType
+            sleepType,
+            stepType,
+            energyType
         ]
         
         healthstore.requestAuthorization(toShare: nil, read: readTypes) { success, error in
@@ -73,8 +75,8 @@ class FatigueService {
                 DispatchQueue.main.async {
                     self.calculator.addMetric(key: "sleep",
                                               value: SleepDurationMetric(weight: 4.0, healthStore: self.healthstore))
-//                    self.calculator.addMetric(key: "restingHR",
-//                                              value: RestingHeartRateMetric(weight: 3.0, healthStore: self.healthstore))
+                    self.calculator.addMetric(key: "restingHR",
+                                              value: RestingHeartRateMetric(weight: 3.0, healthStore: self.healthstore))
                     self.calculator.addMetric(key: "steps",
                                               value: StepsMetric(weight: 2.0, healthStore: self.healthstore))
                     self.calculator.addMetric(key: "calories",

@@ -76,10 +76,13 @@ class RestingHeartRateMetric: FatigueMetric {
     init(weight: Double, healthStore: HKHealthStore) {
         self.weight = weight
         self.baseline = 60.0
+        self.rawValue = 0.0
         self.healthStore = healthStore
+        
+        self.getRawValue { }
     }
     
-    func getRawMetric(completion: @escaping () -> Void) {
+    func getRawValue(completion: @escaping () -> Void) {
         fetchLatest { [weak self] bpm in
             self?.rawValue = bpm ?? 0
             completion()
