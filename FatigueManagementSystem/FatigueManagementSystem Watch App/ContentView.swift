@@ -148,13 +148,10 @@ struct ContentView: View {
                     
                     // MARK: - Metrics List
                     VStack {
-                        //updating metric row view for heart rate
-                        MetricRowView(
-                            iconName: "heart.fill",
-                            iconColor: .red,
-                            title: viewModel.restingHRString)
-                        MetricRowView(iconName: "bed.double.fill", iconColor: .blue, title: viewModel.sleepString)
-                        MetricRowView(iconName: "clock.fill", iconColor: .yellow, title: "8h 15m")
+                        MetricRowView(iconName: "heart.fill", iconColor: .red, title: "72 bpm")
+                        MetricRowView(iconName: "bed.double.fill", iconColor: .blue, title: viewModel.getSleepString())
+                        MetricRowView(iconName: "figure.walk", iconColor: .green, title: viewModel.getStepsString())
+                        MetricRowView(iconName: "flame.fill", iconColor: .orange, title: viewModel.getCaloriesString())
                     }
                     .padding(.horizontal)
                     
