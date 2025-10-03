@@ -16,14 +16,14 @@ class StepsMetric: FatigueMetric {
         self.rawValue = 0.0
         self.healthStore = healthStore
         
-        self.getRawValue()
+        self.getRawValue {}
     }
     
-    func getRawValue() {
+    func getRawValue(completion: @escaping () -> Void) {
         self.rawValue = 0.0
         
-        self.getTodaySteps { steps in
-            self.rawValue = Double(steps)
+        self.getTodaySteps { [weak self] steps in
+            self?.rawValue = Double(steps)
         }
     }
     

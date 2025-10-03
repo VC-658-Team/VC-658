@@ -13,37 +13,46 @@ class SleepDurationMetric: FatigueMetric {
     let name = "sleep"
     let weight: Double
     var baseline: Double
-    var rawValue: Double = 0.0
+    var rawValue: Double
         
     let healthStore: HKHealthStore
     
     init(weight: Double, healthStore: HKHealthStore) {
         self.weight = weight;
         self.baseline = 0.65
-        //self.rawValue = 0.0
+        self.rawValue = 0.0
         self.healthStore = healthStore
         
-        fetchLastSleep { score in
-            DispatchQueue.main.async {
-                self.rawValue = score
-            }
+        self.getRawValue {}
+        
+    }
+    
+    func getRawValue(completion: @escaping () -> Void) {
+        self.rawValue = 1.0
+        
+        self.getLastSleepScore { [weak self] score in
+            self?.rawValue = score
+            completion()
         }
     }
     
-    private func fetchLastSleep(completion: @escaping (Double) -> Void) {
+    private func getLastSleepScore(completion: @escaping (Double) -> Void) {
         guard let sleepType = HKObjectType.categoryType(forIdentifier: .sleepAnalysis) else {
             completion(0); return
         }
         
         let now = Date()
-        let startOfDay = Date(timeIntervalSinceNow: (-24 * 60 * 60))
-        let predicate = HKQuery.predicateForSamples(withStart: startOfDay, end: now, options: .strictStartDate)
+        let start = Date(timeIntervalSinceNow: (-24 * 60 * 60))
+        let predicate = HKQuery.predicateForSamples(withStart: start, end: now, options: .strictEndDate)
         
         let sortDescriptor = NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: false)
         
-        let query = HKSampleQuery(sampleType: sleepType, predicate: predicate, limit: HKObjectQueryNoLimit, sortDescriptors: [sortDescriptor]) { [weak self]  _, samples, _ in
+        let query = HKSampleQuery(sampleType: sleepType,
+                                  predicate: predicate, limit: HKObjectQueryNoLimit,
+                                  sortDescriptors: [sortDescriptor]) { [weak self]  _, samples, _ in
             guard let self, let samples = samples as? [HKCategorySample] else {
-                completion(0); return
+                completion(0)
+                return
             }
         
             let sleepScore = self.calculateSleepScore(from: samples)
@@ -81,9 +90,10 @@ class SleepDurationMetric: FatigueMetric {
         }
         
         // Prevent division by zero if there's no data
-        if durationInBed == 0 { return 0 }
+        guard durationInBed > 0 else { return 0 }
+        guard durationAsleep > 0 else { return 0 }
         
-        // 2. Score each component (e.g., out of 100)
+        // Score each component (e.g., out of 100)
         // Score for total sleep duration (e.g., 8 hours is 100%)
         let totalSleepHours = durationAsleep / 3600
         let durationScore = min((totalSleepHours / 8.0) * 100, 100)
@@ -96,7 +106,7 @@ class SleepDurationMetric: FatigueMetric {
         let deepPercentage = durationDeep / durationAsleep
         let deepScore = min((deepPercentage / 0.20) * 100, 100)
 
-        // 3. Combine scores using weights
+        // Combine scores using weights
         let durationWeight = 0.40
         let efficiencyWeight = 0.30
         let deepSleepWeight = 0.30
@@ -105,59 +115,7 @@ class SleepDurationMetric: FatigueMetric {
         
         return finalScore.rounded() / 100   
     }
-    
-//    func addUpTotal(for intervals: [DateInterval]) -> TimeInterval {
-//        guard intervals.count > 1 else {
-//            return intervals.first?.duration ?? 0
-//        }
-//        
-//        let sorted = intervals.sorted { $0.start < $1.start }
-//        
-//        va
-//    }
-    //-------------------------------above testing
-    /*func getRawValue() {
-        self.rawValue = 1.0
-        
-        self.getLastSleepSample { seconds in
-            self.rawValue = seconds / 3600
-        }
-    }
-    
-    func getLastSleepSample(completion: @escaping (TimeInterval) -> Void) {
-        guard let sleepType = HKObjectType.categoryType(forIdentifier: .sleepAnalysis) else {
-            completion(0)
-            return
-        }
-        
-        let calendar = Calendar.current
-        let now = Date()
-        let startDay = calendar.date(byAdding: .day, value: -1, to: now)
-        
-        let predicate = HKQuery.predicateForSamples(withStart: startDay, end: now)
-        
-        let query = HKSampleQuery(sampleType: sleepType, predicate: predicate, limit: HKObjectQueryNoLimit, sortDescriptors: nil ) { (_, samples, error) in
-            
-            guard error == nil, let samples = samples as? [HKCategorySample] else {
-                completion(0)
-                return
-            }
-            
-            let sleepSamples = samples.filter { sample in
-                return sample.value != HKCategoryValueSleepAnalysis.awake.rawValue
-            }
-            let duration = sleepSamples.reduce(0) { (sum, sample) -> TimeInterval in
-                return sum + sample.endDate.timeIntervalSince(sample.startDate)
-            }
-            
-            DispatchQueue.main.async {
-                completion(duration)
-            }
-        }
-        
-        self.healthStore.execute(query)
-    }
-    */
+
     //-------------------------------below testing
     func calculateBaseline() {
         // get historical data
@@ -167,9 +125,6 @@ class SleepDurationMetric: FatigueMetric {
     
     func normalisedValue() -> Double {
         return rawValue
-        //print(rawValue)
-        //let val = (baseline - rawValue) / baseline
-        //return max(0, min(1, val))
     }
     
 }

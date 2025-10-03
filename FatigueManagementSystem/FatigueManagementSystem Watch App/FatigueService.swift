@@ -28,7 +28,7 @@ class FatigueService {
                 print("Authorisation not granted")
             }
         }
-        requestHKAuthorization { authorised in
+        requestNotificationAuthorization { authorised in
             if authorised {
                 self.notificationsAuthed = true
             }
@@ -51,7 +51,9 @@ class FatigueService {
     func requestHKAuthorization(completion: @escaping (Bool) -> Void) {
         guard
             let rhrType = HKQuantityType.quantityType(forIdentifier: .restingHeartRate),
-            let sleepType = HKObjectType.categoryType(forIdentifier: .sleepAnalysis)
+            let sleepType = HKObjectType.categoryType(forIdentifier: .sleepAnalysis),
+            let stepType = HKQuantityType.quantityType(forIdentifier: .stepCount),
+            let energyType = HKQuantityType.quantityType(forIdentifier: .activeEnergyBurned)
         else {
             completion(false)
             return
@@ -71,8 +73,12 @@ class FatigueService {
                 DispatchQueue.main.async {
                     self.calculator.addMetric(key: "sleep",
                                               value: SleepDurationMetric(weight: 4.0, healthStore: self.healthstore))
-                    self.calculator.addMetric(key: "restingHR",
-                                              value: RestingHeartRateMetric(weight: 3.0, healthStore: self.healthstore))
+//                    self.calculator.addMetric(key: "restingHR",
+//                                              value: RestingHeartRateMetric(weight: 3.0, healthStore: self.healthstore))
+                    self.calculator.addMetric(key: "steps",
+                                              value: StepsMetric(weight: 2.0, healthStore: self.healthstore))
+                    self.calculator.addMetric(key: "calories",
+                                              value: CaloriesMetric(weight: 1.5, healthStore: self.healthstore))
                     completion(success)
                     
                 }
@@ -89,31 +95,45 @@ class FatigueService {
         }
         
         let query = HKObserverQuery(sampleType: type, predicate: nil) {_, completion, _ in
-            self.calculator.CalculateScore()
-            completion()
+            self.calculator.CalculateScore {
+                completion()
+            }
         }
+        
         healthstore.execute(query)
 
     }
 
     func CalculateScore() {
-        calculator.CalculateScore()
-        if(calculator.FatigueScore > 80 && notificationsAuthed) {
-            triggerNotification()
+        calculator.CalculateScore { [weak self] in
+            guard let self = self else { return }
+            if(calculator.FatigueScore > 80 && notificationsAuthed) {
+                triggerNotification()
+            }
         }
     }
     
     func triggerNotification() {
         let content = UNMutableNotificationContent()
         content.title = "Fatigue Warning"
-        content.body = "Your are predicted to be fatigued"
-        content.sound = UNNotificationSound.default
+        content.body = "You are predicted to be fatigued"
+        content.sound = .default
         
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 2, repeats: false)
         
-        let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
-        let notificationCenter = UNUserNotificationCenter.current()
-        notificationCenter.add(request)
+        let request = UNNotificationRequest(
+            identifier: UUID().uuidString,
+            content: content,
+            trigger: trigger
+        )
+        
+        DispatchQueue.main.async {
+            UNUserNotificationCenter.current().add(request) { error in
+                if let error = error {
+                    print("Failed to schedule notification: \(error)")
+                }
+            }
+        }
     }
     
 }

@@ -16,14 +16,14 @@ class CaloriesMetric: FatigueMetric {
         self.rawValue = 0.0
         self.healthStore = healthStore
         
-        self.getRawValue()
+        self.getRawValue {}
     }
     
-    func getRawValue() {
+    func getRawValue(completion: @escaping () -> Void) {
         self.rawValue = 0.0
         
-        self.getTodayCalories { calories in
-            self.rawValue = calories
+        self.getTodayCalories { [weak self] calories in
+            self?.rawValue = calories
         }
     }
     

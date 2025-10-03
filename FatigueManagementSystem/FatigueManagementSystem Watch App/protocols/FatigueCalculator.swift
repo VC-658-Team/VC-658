@@ -8,8 +8,8 @@ protocol FatigueCalculator {
     
     func addMetric(key: String, value: FatigueMetric)-> Void
     
-    func CalculateScore()
-    
+    func CalculateScore(completion: @escaping () -> Void)
+
     func GetMetric(key: String) -> FatigueMetric
     
 }
