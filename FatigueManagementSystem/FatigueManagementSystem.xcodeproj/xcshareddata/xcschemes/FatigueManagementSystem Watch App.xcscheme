@@ -67,7 +67,6 @@
             </BuildableReference>
          </TestableReference>
       </Testables>
-
    </TestAction>
    <LaunchAction
       buildConfiguration = "Debug"

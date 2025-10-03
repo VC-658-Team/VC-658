@@ -21,6 +21,8 @@ class FatigueModel: ObservableObject {
     
     private let service = FatigueService.service
     init() {
+        FatigueService.service.start()
+        getFatigueScore()
             
     }
     

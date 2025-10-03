@@ -18,13 +18,12 @@ class FatigueService {
     
     private init() {
     }
-
+    
     func start() {
         requestHKAuthorization { authorised in
             if authorised {
                 self.StartObservers()
-            }
-            else {
+            } else {
                 print("Authorisation not granted")
             }
         }
@@ -71,17 +70,35 @@ class FatigueService {
                 print("Healthkit authorization error: \(error.localizedDescription)")
             }
             else {
-                
+                //changing
                 DispatchQueue.main.async {
-                    self.calculator.addMetric(key: "sleep",
-                                              value: SleepDurationMetric(weight: 4.0, healthStore: self.healthstore))
-                    self.calculator.addMetric(key: "restingHR",
-                                              value: RestingHeartRateMetric(weight: 3.0, healthStore: self.healthstore))
-                    self.calculator.addMetric(key: "steps",
-                                              value: StepsMetric(weight: 2.0, healthStore: self.healthstore))
-                    self.calculator.addMetric(key: "calories",
-                                              value: CaloriesMetric(weight: 1.5, healthStore: self.healthstore))
+                    let sleep = SleepDurationMetric(weight: 4.0, healthStore: self.healthstore)
+                    let rhr = RestingHeartRateMetric(weight: 3.0, healthStore: self.healthstore)
+                    let steps = StepsMetric(weight: 2.0, healthStore: self.healthstore)
+                    let calories = CaloriesMetric(weight: 1.5, healthStore: self.healthstore)
+                    
+                    self.calculator.addMetric(key: "sleep", value: sleep)
+                    self.calculator.addMetric(key: "resrtingHR", value: rhr)
+                    self.calculator.addMetric(key: "steps", value: steps)
+                    self.calculator.addMetric(key: "calories", value: calories)
+                    
+                    sleep.getRawValue {}
+                    rhr.getRawValue {}
+                    steps.getRawValue {}
+                    calories.getRawValue {}
+                    
                     completion(success)
+                    
+                    
+                    //                    self.calculator.addMetric(key: "sleep",
+                    //                                              value: SleepDurationMetric(weight: 4.0, healthStore: self.healthstore))
+                    //                    self.calculator.addMetric(key: "restingHR",
+                    //                                              value: RestingHeartRateMetric(weight: 3.0, healthStore: self.healthstore))
+                    //                    self.calculator.addMetric(key: "steps",
+                    //                                              value: StepsMetric(weight: 2.0, healthStore: self.healthstore))
+                    //                    self.calculator.addMetric(key: "calories",
+                    //                                              value: CaloriesMetric(weight: 1.5, healthStore: self.healthstore))
+                    //                    completion(success)
                     
                 }
             }
@@ -103,9 +120,9 @@ class FatigueService {
         }
         
         healthstore.execute(query)
-
+        
     }
-
+    
     func CalculateScore() {
         calculator.CalculateScore { [weak self] in
             guard let self = self else { return }
