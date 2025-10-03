@@ -92,6 +92,7 @@ class FatigueModel: ObservableObject {
                 
                 // works 
                 DispatchQueue.main.async {
+                    self.calculator.addMetric(key: "Resting Heart Rate", value: RestingHeartRateMetric(weight: 3.0, healthStore: self.healthstore))
                     self.calculator.addMetric(key: "sleep",
                                               value: SleepDurationMetric(weight: 4.0, healthStore: self.healthstore))
                     self.calculator.addMetric(key: "steps",
