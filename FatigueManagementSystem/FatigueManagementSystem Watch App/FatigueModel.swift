@@ -1,5 +1,6 @@
 import HealthKit
 import UserNotifications
+import Combine
 
 class FatigueModel: ObservableObject {
     private let healthstore = HKHealthStore()
@@ -54,6 +55,14 @@ class FatigueModel: ObservableObject {
         }
         let calories = Int(caloriesMetric.rawValue)
         caloryString = "\(calories) cal"
+    }
+    
+    func getStepsString() -> String {
+        return stepsString
+    }
+    
+    func getCaloriesString() -> String {
+        return caloryString
     }
     
     func getFatigueScore() -> Int {

@@ -7,6 +7,7 @@
 
 import HealthKit
 import UserNotifications
+import Combine
 
 class FatigueService {
     private let healthstore = HKHealthStore()
@@ -80,7 +81,7 @@ class FatigueService {
                 DispatchQueue.main.async {
                     self.calculator.addMetric(key: "sleep",
                                               value: SleepDurationMetric(weight: 4.0, healthStore: self.healthstore))
-                    self.calculator.addMetric(key: "restingHR",
+                    self.calculator.addMetric(key: "Resting Heart Rate",
                                               value: RestingHeartRateMetric(weight: 3.0, healthStore: self.healthstore))
                     self.calculator.addMetric(key: "steps",
                                               value: StepsMetric(weight: 2.0, healthStore: self.healthstore))

@@ -77,4 +77,8 @@ import UserNotifications
          }
      }
      
+     func getFatigueScore() -> Int {
+         return FatigueScore
+     }
+     
  }
