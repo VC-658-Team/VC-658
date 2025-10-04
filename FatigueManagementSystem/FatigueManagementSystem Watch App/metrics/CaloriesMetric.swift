@@ -1,9 +1,9 @@
 import Foundation
 import HealthKit
 
-class StepsMetric: FatigueMetric {
+class CaloriesMetric: FatigueMetric {
     
-    let name = "steps"
+    let name = "calories"
     let weight: Double
     var baseline: Double
     var rawValue: Double
@@ -12,7 +12,7 @@ class StepsMetric: FatigueMetric {
     
     init(weight: Double, healthStore: HKHealthStore) {
         self.weight = weight
-        self.baseline = 10000.0
+        self.baseline = 500.0
         self.rawValue = 0.0
         self.healthStore = healthStore
         
@@ -22,13 +22,13 @@ class StepsMetric: FatigueMetric {
     func getRawValue() {
         self.rawValue = 0.0
         
-        self.getTodaySteps { steps in
-            self.rawValue = Double(steps)
+        self.getTodayCalories { calories in
+            self.rawValue = calories
         }
     }
     
-    func getTodaySteps(completion: @escaping (Int) -> Void) {
-        guard let stepsType = HKQuantityType.quantityType(forIdentifier: .stepCount) else {
+    func getTodayCalories(completion: @escaping (Double) -> Void) {
+        guard let caloriesType = HKQuantityType.quantityType(forIdentifier: .activeEnergyBurned) else {
             completion(0)
             return
         }
@@ -40,7 +40,7 @@ class StepsMetric: FatigueMetric {
         let predicate = HKQuery.predicateForSamples(withStart: startOfDay, end: now, options: .strictStartDate)
         
         let query = HKStatisticsQuery(
-            quantityType: stepsType,
+            quantityType: caloriesType,
             quantitySamplePredicate: predicate,
             options: .cumulativeSum
         ) { _, result, error in
@@ -52,10 +52,10 @@ class StepsMetric: FatigueMetric {
                 return
             }
             
-            let steps = result?.sumQuantity()?.doubleValue(for: HKUnit.count()) ?? 0
+            let calories = result?.sumQuantity()?.doubleValue(for: HKUnit.kilocalorie()) ?? 0
             
             DispatchQueue.main.async {
-                completion(Int(steps))
+                completion(calories)
             }
         }
         
@@ -63,23 +63,23 @@ class StepsMetric: FatigueMetric {
     }
     
     func calculateBaseline() {
-        self.getHistoricalStepsData { dailySteps in
-            if !dailySteps.isEmpty {
-                let totalSteps = dailySteps.reduce(0, +)
-                self.baseline = Double(totalSteps / dailySteps.count)
+        self.getHistoricalCaloriesData { dailyCalories in
+            if !dailyCalories.isEmpty {
+                let totalCalories = dailyCalories.reduce(0, +)
+                self.baseline = totalCalories / Double(dailyCalories.count)
             } else {
-                self.baseline = 10000.0
+                self.baseline = 500.0
             }
         }
     }
     
-    func getHistoricalStepsData(completion: @escaping ([Int]) -> Void) {
-        guard let stepsType = HKQuantityType.quantityType(forIdentifier: .stepCount) else {
+    func getHistoricalCaloriesData(completion: @escaping ([Double]) -> Void) {
+        guard let caloriesType = HKQuantityType.quantityType(forIdentifier: .activeEnergyBurned) else {
             completion([])
             return
         }
         
-        var dailySteps: [Int] = []
+        var dailyCalories: [Double] = []
         let calendar = Calendar.current
         let endDate = Date()
         let numberOfDays = 30
@@ -97,13 +97,13 @@ class StepsMetric: FatigueMetric {
             let predicate = HKQuery.predicateForSamples(withStart: dayStart, end: dayEnd, options: .strictStartDate)
             
             let query = HKStatisticsQuery(
-                quantityType: stepsType,
+                quantityType: caloriesType,
                 quantitySamplePredicate: predicate,
                 options: .cumulativeSum
             ) { _, result, error in
                 
-                let steps = result?.sumQuantity()?.doubleValue(for: HKUnit.count()) ?? 0
-                dailySteps.append(Int(steps))
+                let calories = result?.sumQuantity()?.doubleValue(for: HKUnit.kilocalorie()) ?? 0
+                dailyCalories.append(calories)
                 group.leave()
             }
             
@@ -111,7 +111,7 @@ class StepsMetric: FatigueMetric {
         }
         
         group.notify(queue: .main) {
-            completion(dailySteps)
+            completion(dailyCalories)
         }
     }
     
