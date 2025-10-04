@@ -8,38 +8,52 @@ class FatigueModel: ObservableObject {
     @Published var authorised = false
     @Published var fatigueScore = 0
     
+    @Published var sleepString = "Score: 0"
+    @Published var restingHRString = "-- bpm"
+    @Published var stepsString = "0 steps"
+    @Published var caloryString = "0 cal"
+    
     init() {
         requestHealthkitAuthorization()
     }
     
-    func getSleepString() -> String {
+    func SetSleepString() {
         guard let sleepMetric = calculator.Metrics["sleep"] else {
-            return ""
+            sleepString = "Score: 0"
+            return
         }
-        let hours = Int(sleepMetric.rawValue)
-        let remainingSeconds = hours % 3600
-        let minutes = remainingSeconds / 60
-        return "\(hours)hrs \(minutes)mins"
+        sleepString = "Score: \(Int(sleepMetric.rawValue * 100))"
     }
     
-    func getStepsString() -> String {
+    // adding restingheartrate string function
+    func SetRestingHRString() {
+        if let rhr = calculator.Metrics["Resting Heart Rate"]?.rawValue, rhr > 0 {
+            restingHRString = "\(Int(rhr)) bpm"
+        } else {
+            restingHRString = "-- bpm"
+        }
+    }
+
+    func setStepsString() {
         guard let stepsMetric = calculator.Metrics["steps"] else {
-            return "0 steps"
+            stepsString = "0 steps"
+            return
         }
         let steps = Int(stepsMetric.rawValue)
         if steps >= 1000 {
-            return String(format: "%.1fK steps", Double(steps) / 1000)
+            stepsString = String(format: "%.1fK steps", Double(steps) / 1000)
         } else {
-            return "\(steps) steps"
+            stepsString = "\(steps) steps"
         }
     }
     
-    func getCaloriesString() -> String {
+    func setCaloriesString() {
         guard let caloriesMetric = calculator.Metrics["calories"] else {
-            return "0 cal"
+            caloryString = "0 cal"
+            return
         }
         let calories = Int(caloriesMetric.rawValue)
-        return "\(calories) cal"
+        caloryString = "\(calories) cal"
     }
     
     func getFatigueScore() -> Int {
@@ -103,7 +117,7 @@ class FatigueModel: ObservableObject {
     func triggerNotification() {
         let content = UNMutableNotificationContent()
         content.title = "Fatigue Warning"
-        content.body = "Your are predicted to be fatigued"
+        content.body = "You are predicted to be fatigued"
         content.sound = UNNotificationSound.default
         
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 2, repeats: false)
@@ -111,6 +125,5 @@ class FatigueModel: ObservableObject {
         let request = UNNotificationRequest(identifier: UUID().uuidString, content: content, trigger: trigger)
         let notificationCenter = UNUserNotificationCenter.current()
         notificationCenter.add(request)
-        print("made it")
     }
 }

@@ -85,7 +85,7 @@ import HealthKit
 
 
 struct ContentView: View {
-    @StateObject var viewModel = FatigueModel();
+    @StateObject private var viewModel: FatigueModel
     // CHANGED: Converted to @State variables to allow dynamic updates
     @State private var stressLevel: Double = 0.65
     @State private var stressValue: Int = 1
@@ -98,6 +98,10 @@ struct ContentView: View {
         } else {
             return .red
         }
+    }
+    
+    init(service: FatigueService) {
+        _viewModel = StateObject(wrappedValue: FatigueModel(service: service))
     }
     
     var body: some View {
@@ -148,10 +152,10 @@ struct ContentView: View {
                     
                     // MARK: - Metrics List
                     VStack {
-                        MetricRowView(iconName: "heart.fill", iconColor: .red, title: "72 bpm")
-                        MetricRowView(iconName: "bed.double.fill", iconColor: .blue, title: viewModel.getSleepString())
-                        MetricRowView(iconName: "figure.walk", iconColor: .green, title: viewModel.getStepsString())
-                        MetricRowView(iconName: "flame.fill", iconColor: .orange, title: viewModel.getCaloriesString())
+                        MetricRowView(iconName: "heart.fill", iconColor: .red, title: viewModel.restingHRString)
+                        MetricRowView(iconName: "bed.double.fill", iconColor: .blue, title: viewModel.sleepString)
+                        MetricRowView(iconName: "figure.walk", iconColor: .green, title: viewModel.stepsString)
+                        MetricRowView(iconName: "flame.fill", iconColor: .orange, title: viewModel.caloryString)
                     }
                     .padding(.horizontal)
                     
@@ -160,18 +164,18 @@ struct ContentView: View {
                 .padding(.top, 5)
                 // ADDED: This modifier runs code when the view first appears
                 .onAppear {
-                    viewModel.requestHealthkitAuthorization()
-                    // This timer fires every 2 seconds to simulate live data updates
-                    Timer.scheduledTimer(withTimeInterval: 3.0, repeats: true) { _ in
-                        // 'withAnimation' makes the change smooth instead of sudden
-                        withAnimation(.easeInOut(duration: 1.0)) {
-//                            let newStressValue = Int.random(in: 10...100)
-                            self.stressValue = viewModel.getFatigueScore()
-                            // Convert the Int score (10-100) to a Double for the gauge (0.1-1.0)
-                            self.stressLevel = Double(self.stressValue) / 100.0
-                        }
+                    viewModel.getFatigueScore()
+                        
+                }.onReceive(viewModel.$fatigueScore) { score in
+                    // 'withAnimation' makes the change smooth instead of sudden
+                    withAnimation(.easeInOut(duration: 1.0)) {
+                        //let newStressValue = Int.random(in: 10...100)
+                        self.stressValue = score
+                        // Convert the Int score (10-100) to a Double for the gauge (0.1-1.0)
+                        self.stressLevel = Double(self.stressValue) / 100.0
                     }
                 }
+                            
             }
         }
     }

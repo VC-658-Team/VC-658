@@ -457,9 +457,11 @@
 				DEVELOPMENT_TEAM = 34AHYCFT5R;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "FatigueManagementSystem-Watch-App-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = FatigueManagementSystem;
 				INFOPLIST_KEY_LSApplicationCategoryType = "";
-				INFOPLIST_KEY_NSHealthShareUsageDescription = "This will read the resting heart rate to calculate the fatigue.";
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "to get data from healthkit";
+				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "to store the data";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_WKWatchOnly = YES;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -491,9 +493,11 @@
 				DEVELOPMENT_TEAM = 34AHYCFT5R;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = "FatigueManagementSystem-Watch-App-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = FatigueManagementSystem;
 				INFOPLIST_KEY_LSApplicationCategoryType = "";
-				INFOPLIST_KEY_NSHealthShareUsageDescription = "This will read the resting heart rate to calculate the fatigue.";
+				INFOPLIST_KEY_NSHealthShareUsageDescription = "to get data from healthkit";
+				INFOPLIST_KEY_NSHealthUpdateUsageDescription = "to store the data";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown";
 				INFOPLIST_KEY_WKWatchOnly = YES;
 				LD_RUNPATH_SEARCH_PATHS = (

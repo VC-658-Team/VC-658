@@ -17,6 +17,9 @@ protocol FatigueMetric {
         return max(0, min(1, baseline / rawValue))
 
     */
+    
+    func getRawValue(completion: @escaping () -> Void)
+    
     func normalisedValue() -> Double
     
     // Used to calculate the baseline if it does not exist in local storage

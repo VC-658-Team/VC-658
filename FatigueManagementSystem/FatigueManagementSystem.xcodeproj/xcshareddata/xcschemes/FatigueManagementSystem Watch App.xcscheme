@@ -43,6 +43,30 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES"
       shouldAutocreateTestPlan = "YES">
+      <Testables>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "18C871482E667BD500D99233"
+               BuildableName = "FatigueManagementSystem Watch AppTests.xctest"
+               BlueprintName = "FatigueManagementSystem Watch AppTests"
+               ReferencedContainer = "container:FatigueManagementSystem.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO"
+            parallelizable = "YES">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "18C871522E667BD500D99233"
+               BuildableName = "FatigueManagementSystem Watch AppUITests.xctest"
+               BlueprintName = "FatigueManagementSystem Watch AppUITests"
+               ReferencedContainer = "container:FatigueManagementSystem.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
+      </Testables>
    </TestAction>
    <LaunchAction
       buildConfiguration = "Debug"

@@ -9,9 +9,26 @@ import SwiftUI
 import HealthKit
 @main
 struct FatigueManagementSystem_Watch_AppApp: App {
+    let service = FatigueService()
+    @State private var ready = false
+    
+    
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            if ready {
+                ContentView(service: service)
+                
+            } else {
+                LoadingView()
+                    .task {
+                        let success = await withCheckedContinuation { continuation in
+                            service.start { ready in
+                                continuation.resume(returning: ready)
+                            }
+                        }
+                        ready = success
+                    }
+            }
         }
     }
 }

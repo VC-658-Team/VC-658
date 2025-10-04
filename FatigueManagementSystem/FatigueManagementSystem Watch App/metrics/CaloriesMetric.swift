@@ -18,18 +18,19 @@ class CaloriesMetric: FatigueMetric {
         self.baseline = localDataManager.getBaseline(for: "calories") ?? 500.0
         self.rawValue = 0.0
         
-        self.getRawValue()
-        
-        if localDataManager.shouldUpdateBaseline(for: "calories") {
-            self.calculateBaseline()
+        self.getRawValue {
+            if self.localDataManager.shouldUpdateBaseline(for: "calories") {
+                self.calculateBaseline()
+            }
         }
     }
     
-    func getRawValue() {
+    func getRawValue(completion: @escaping () -> Void) {
         self.rawValue = 0.0
         
-        self.getTodayCalories { calories in
-            self.rawValue = calories
+        self.getTodayCalories { [weak self] calories in
+            self?.rawValue = calories
+            completion()
         }
     }
     

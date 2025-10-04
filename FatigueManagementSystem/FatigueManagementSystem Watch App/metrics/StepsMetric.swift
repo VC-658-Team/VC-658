@@ -18,18 +18,19 @@ class StepsMetric: FatigueMetric {
         self.baseline = localDataManager.getBaseline(for: "steps") ?? 10000.0
         self.rawValue = 0.0
         
-        self.getRawValue()
-        
-        if localDataManager.shouldUpdateBaseline(for: "steps") {
-            self.calculateBaseline()
+        self.getRawValue {
+            if self.localDataManager.shouldUpdateBaseline(for: "steps") {
+                self.calculateBaseline()
+            }
         }
     }
     
-    func getRawValue() {
+    func getRawValue(completion: @escaping () -> Void) {
         self.rawValue = 0.0
         
-        self.getTodaySteps { steps in
-            self.rawValue = Double(steps)
+        self.getTodaySteps { [weak self] steps in
+            self?.rawValue = Double(steps)
+            completion()
         }
     }
     
