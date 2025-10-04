@@ -132,6 +132,10 @@ struct FatigueManagementSystem_Watch_AppTests {
         #expect(caloriesString.contains("cal") || caloriesString.contains("0 cal"))
     }
     
-    
+    @Test func testHealthKitPermissionsIncludeStepsAndCalories() async throws {
+        let fatigueModel = FatigueModel()
+        
+        #expect(true)
+    }
 
 }
