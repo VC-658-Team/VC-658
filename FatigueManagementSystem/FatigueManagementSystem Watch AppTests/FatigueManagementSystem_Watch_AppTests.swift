@@ -10,7 +10,6 @@ struct FatigueManagementSystem_Watch_AppTests {
         
         #expect(stepsMetric.name == "steps")
         #expect(stepsMetric.weight == 2.0)
-        #expect(stepsMetric.baseline == 10000.0)
         #expect(stepsMetric.rawValue == 0.0)
     }
     
@@ -20,7 +19,6 @@ struct FatigueManagementSystem_Watch_AppTests {
         
         #expect(caloriesMetric.name == "calories")
         #expect(caloriesMetric.weight == 1.5)
-        #expect(caloriesMetric.baseline == 500.0)
         #expect(caloriesMetric.rawValue == 0.0)
     }
     
@@ -132,6 +130,37 @@ struct FatigueManagementSystem_Watch_AppTests {
         #expect(caloriesString.contains("cal") || caloriesString.contains("0 cal"))
     }
     
+    @Test func testLocalDataManagerBaselineStorage() async throws {
+        let localDataManager = LocalDataManager.shared
+        
+        localDataManager.saveBaseline(for: "steps", value: 8500.0)
+        localDataManager.saveBaseline(for: "calories", value: 450.0)
+        
+        let stepsBaseline = localDataManager.getBaseline(for: "steps")
+        let caloriesBaseline = localDataManager.getBaseline(for: "calories")
+        
+        #expect(stepsBaseline == 8500.0)
+        #expect(caloriesBaseline == 450.0)
+    }
     
+    @Test func testLocalDataManagerDailyUpdateCheck() async throws {
+        let localDataManager = LocalDataManager.shared
+        
+        localDataManager.saveBaseline(for: "steps", value: 10000.0)
+        
+        let shouldUpdate = localDataManager.shouldUpdateBaseline(for: "steps")
+        #expect(shouldUpdate == false)
+    }
+    
+    @Test func testLocalDataManagerFatigueScoreStorage() async throws {
+        let localDataManager = LocalDataManager.shared
+        
+        localDataManager.saveDailyFatigueScore(75)
+        
+        let scores = localDataManager.getDailyFatigueScores()
+        let today = Calendar.current.startOfDay(for: Date())
+        
+        #expect(scores[today] == 75)
+    }
 
 }
