@@ -11,9 +11,11 @@ class LocalDataManager {
         static let stepsBaseline = "steps_baseline"
         static let caloriesBaseline = "calories_baseline"
         static let sleepBaseline = "sleep_baseline"
+        static let restingHRBaseline = "restingHR_baseline"
         static let stepsBaselineDate = "steps_baseline_date"
         static let caloriesBaselineDate = "calories_baseline_date"
         static let sleepBaselineDate = "sleep_baseline_date"
+        static let restingHRBaselineDate = "restingHR_baseline_date"
         static let dailyFatigueScores = "daily_fatigue_scores"
         static let lastFatigueScoreDate = "last_fatigue_score_date"
     }
@@ -32,6 +34,9 @@ class LocalDataManager {
         case "sleep":
             baselineKey = Keys.sleepBaseline
             dateKey = Keys.sleepBaselineDate
+        case "restingHR":
+            baselineKey = Keys.restingHRBaseline
+            dateKey = Keys.restingHRBaselineDate
         default:
             return
         }
@@ -50,6 +55,8 @@ class LocalDataManager {
             baselineKey = Keys.caloriesBaseline
         case "sleep":
             baselineKey = Keys.sleepBaseline
+        case "restingHR":
+            baselineKey = Keys.restingHRBaseline
         default:
             return nil
         }
@@ -67,6 +74,8 @@ class LocalDataManager {
             dateKey = Keys.caloriesBaselineDate
         case "sleep":
             dateKey = Keys.sleepBaselineDate
+        case "restingHR":
+            dateKey = Keys.restingHRBaselineDate
         default:
             return true
         }
