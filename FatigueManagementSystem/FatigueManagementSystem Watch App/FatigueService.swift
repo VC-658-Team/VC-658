@@ -9,7 +9,8 @@ import HealthKit
 import UserNotifications
 
 class FatigueService {
-    private let healthstore = HKHealthStore()
+    // MODIFIED: Changed from 'private' to 'public' to allow access from other modules.
+    public let healthstore = HKHealthStore()
     public var calculator = DefaultFatigueCalculator()
     private var notificationsAuthed: Bool = false;
     var authorised = false;

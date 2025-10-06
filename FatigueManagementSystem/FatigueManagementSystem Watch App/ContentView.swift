@@ -152,7 +152,12 @@ struct ContentView: View {
                     
                     // MARK: - Metrics List
                     VStack {
-                        MetricRowView(iconName: "heart.fill", iconColor: .red, title: viewModel.restingHRString)
+                        // MODIFIED: Wrapped the heart rate row in a NavigationLink
+                        NavigationLink(destination: HeartRateDetailView()) {
+                            MetricRowView(iconName: "heart.fill", iconColor: .red, title: viewModel.restingHRString)
+                        }
+                        .buttonStyle(PlainButtonStyle()) // Ensures the whole row is tappable without changing its style
+
                         MetricRowView(iconName: "bed.double.fill", iconColor: .blue, title: viewModel.sleepString)
                         MetricRowView(iconName: "figure.walk", iconColor: .green, title: viewModel.stepsString)
                         MetricRowView(iconName: "flame.fill", iconColor: .orange, title: viewModel.caloryString)

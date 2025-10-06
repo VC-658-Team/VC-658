@@ -19,7 +19,8 @@ class FatigueModel: ObservableObject {
     @Published var stepsString = "0 steps"
     @Published var caloryString = "0 cal"
     
-    private let service: FatigueService
+    // MODIFIED: Changed from 'private' to 'public' to allow ContentView to access it.
+    public let service: FatigueService
     
     init(service: FatigueService) {
         self.service = service
