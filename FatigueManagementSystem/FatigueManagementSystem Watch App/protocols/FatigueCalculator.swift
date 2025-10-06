@@ -2,14 +2,14 @@ import Foundation
 
 protocol FatigueCalculator {
     
-    var FatigueScore : Int { get }
+    var fatigueScore: Int { get }
     
-    var Metrics: Dictionary<String, FatigueMetric> { get }
-    
-    func addMetric(key: String, value: FatigueMetric)-> Void
-    
-    func CalculateScore(completion: @escaping () -> Void)
+    var metrics: [String: FatigueMetric] { get }
 
-    func GetMetric(key: String) -> FatigueMetric
+    func addMetric(key: String, value: FatigueMetric)
+    
+    func calculateScore(completion: @escaping () -> Void)
+
+    func getMetric(key: String) -> FatigueMetric
     
 }

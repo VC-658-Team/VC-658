@@ -14,11 +14,11 @@ class SleepDurationMetric: FatigueMetric {
     let weight: Double
     var baseline: Double
     var rawValue: Double
-        
+    
     let healthStore: HKHealthStore
     
     init(weight: Double, healthStore: HKHealthStore) {
-        self.weight = weight;
+        self.weight = weight
         self.baseline = 0.65
         self.rawValue = 0.0
         self.healthStore = healthStore
@@ -54,9 +54,9 @@ class SleepDurationMetric: FatigueMetric {
                 completion(0)
                 return
             }
-        
+            
             let sleepScore = self.calculateSleepScore(from: samples)
-        
+            
             completion(sleepScore)
         }
         healthStore.execute(query)
@@ -72,16 +72,16 @@ class SleepDurationMetric: FatigueMetric {
         for sample in samples {
             let duration = sample.endDate.timeIntervalSince(sample.startDate)
             switch HKCategoryValueSleepAnalysis(rawValue: sample.value) {
-                case .inBed:
-                    durationInBed += duration
-                case .asleepREM:
-                    durationREM += duration
-                    durationAsleep += duration
-                case .asleepDeep:
-                    durationDeep += duration
-                    durationAsleep += duration
-                case .asleepCore:
-                    durationAsleep += duration
+            case .inBed:
+                durationInBed += duration
+            case .asleepREM:
+                durationREM += duration
+                durationAsleep += duration
+            case .asleepDeep:
+                durationDeep += duration
+                durationAsleep += duration
+            case .asleepCore:
+                durationAsleep += duration
             case .asleepUnspecified:
                 durationAsleep += duration
             default:
@@ -97,7 +97,7 @@ class SleepDurationMetric: FatigueMetric {
         // Score for total sleep duration (e.g., 8 hours is 100%)
         let totalSleepHours = durationAsleep / 3600
         let durationScore = min((totalSleepHours / 8.0) * 100, 100)
-
+        
         // Score for sleep efficiency (e.g., 85% efficiency is 100%)
         let efficiency = (durationAsleep / durationInBed)
         let efficiencyScore = min((efficiency / 0.85) * 100, 100)
@@ -105,21 +105,22 @@ class SleepDurationMetric: FatigueMetric {
         // Score for deep sleep (e.g., 20% of total sleep is 100%)
         let deepPercentage = durationDeep / durationAsleep
         let deepScore = min((deepPercentage / 0.20) * 100, 100)
-
+        
         // Combine scores using weights
         let durationWeight = 0.40
         let efficiencyWeight = 0.30
         let deepSleepWeight = 0.30
         
-        let finalScore = (durationScore * durationWeight) + (efficiencyScore * efficiencyWeight) + (deepScore * deepSleepWeight)
+        let finalScore = (durationScore * durationWeight)
+            + (efficiencyScore * efficiencyWeight)
+            + (deepScore * deepSleepWeight)
         
-        return finalScore.rounded() / 100   
+        return finalScore.rounded() / 100
     }
-
-    //-------------------------------below testing
+    
     func calculateBaseline() {
         // get historical data
-        //else choose average value
+        // else choose average value
         baseline = 0.5
     }
     
@@ -128,5 +129,3 @@ class SleepDurationMetric: FatigueMetric {
     }
     
 }
-    
-

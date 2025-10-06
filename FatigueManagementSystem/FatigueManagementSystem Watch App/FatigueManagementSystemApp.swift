@@ -8,10 +8,9 @@
 import SwiftUI
 import HealthKit
 @main
-struct FatigueManagementSystem_Watch_AppApp: App {
+struct FatigueManagementSystemWatchApp: App {
     let service = FatigueService()
     @State private var ready = false
-    
     
     var body: some Scene {
         WindowGroup {
@@ -32,4 +31,3 @@ struct FatigueManagementSystem_Watch_AppApp: App {
         }
     }
 }
-

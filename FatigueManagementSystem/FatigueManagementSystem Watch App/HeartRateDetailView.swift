@@ -103,7 +103,6 @@ private struct DailyHeartRateView: View {
     }
 }
 
-
 // MARK: - Preview
 
 struct HeartRateDetailView_Previews: PreviewProvider {

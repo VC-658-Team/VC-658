@@ -5,7 +5,6 @@
 //  Created by Tom Vo on 6/10/2025.
 //
 
-
 //
 //  LineGraph.swift
 //  FatigueManagementSystem Watch App

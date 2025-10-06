@@ -23,7 +23,7 @@ protocol FatigueMetric {
     func normalisedValue() -> Double
     
     // Used to calculate the baseline if it does not exist in local storage
-    func calculateBaseline() -> Void
+    func calculateBaseline()
     
 }
 
@@ -33,4 +33,3 @@ extension FatigueMetric {
     }
     
 }
-

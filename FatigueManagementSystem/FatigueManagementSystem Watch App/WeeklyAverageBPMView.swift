@@ -5,7 +5,6 @@
 //  Created by Tom Vo on 6/10/2025.
 //
 
-
 //
 //  WeeklyAverageBPMView.swift
 //  FatigueManagementSystem Watch App

@@ -1,54 +1,35 @@
 import Foundation
 import UserNotifications
-//
-//class DefaultFatigueCalculator {
-//    static let shared = DefaultFatigueCalculator()
-//    private var metrics: [String: Double] = [:]
-//    
-//    func addMetric(name: String, value: Double) {
-//        metrics[name] = value
-//    }
-//    
-//    func calculateFatigue() -> Double {
-//        let sum = metrics.values.reduce(0, +)
-//        return sum / Double(metrics.count)
-//    }
-//}
 
-
-
- class DefaultFatigueCalculator: FatigueCalculator {
-     var Metrics: Dictionary<String, any FatigueMetric>
+class DefaultFatigueCalculator: FatigueCalculator {
+    var metrics: [String: FatigueMetric]
      
-     var FatigueScore: Int = 0
+     var fatigueScore: Int = 0
          
      // Store metrics as a key-value pair dictionary
      init() {
-         Metrics = [:]
+         metrics = [:]
      }
-    
      // Add metric to dictionary using key parameter
      func addMetric(key: String, value: any FatigueMetric) {
-         Metrics.updateValue(value, forKey: key)
+         metrics.updateValue(value, forKey: key)
      }
     
      // Return selected metric using key parameter
-     // TODO: check if metric is not set
-     func GetMetric(key: String) -> any FatigueMetric {
-         return Metrics[key]!
+     // check if metric is not set
+     func getMetric(key: String) -> any FatigueMetric {
+         return metrics[key]!
      }
     
-    
      // Calculate fatigue score
-     func CalculateScore(completion: @escaping () -> Void) {
-         let allMetrics = Array(Metrics.values)
+     func calculateScore(completion: @escaping () -> Void) {
+         let allMetrics = Array(metrics.values)
          guard !allMetrics.isEmpty else {
              completion()
              return
              
          }
          let group = DispatchGroup()
-         
          
          for metric in allMetrics {
              group.enter()
@@ -71,7 +52,7 @@ import UserNotifications
              }
              
              let weightedTotal = allMetrics.map { $0.weightedScore() }.reduce(0, +)
-             self.FatigueScore = Int((weightedTotal / totalWeight) * 100)
+             self.fatigueScore = Int((weightedTotal / totalWeight) * 100)
 
              completion()
          }

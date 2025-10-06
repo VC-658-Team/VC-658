@@ -87,8 +87,8 @@ class StepsMetric: FatigueMetric {
         
         let group = DispatchGroup()
         
-        for i in 0..<numberOfDays {
-            guard let dayStart = calendar.date(byAdding: .day, value: -i, to: endDate),
+        for day in 0..<numberOfDays {
+            guard let dayStart = calendar.date(byAdding: .day, value: -day, to: endDate),
                   let dayEnd = calendar.date(byAdding: .day, value: 1, to: dayStart) else {
                 continue
             }
@@ -101,7 +101,7 @@ class StepsMetric: FatigueMetric {
                 quantityType: stepsType,
                 quantitySamplePredicate: predicate,
                 options: .cumulativeSum
-            ) { _, result, error in
+            ) { _, result, _ in
                 
                 let steps = result?.sumQuantity()?.doubleValue(for: HKUnit.count()) ?? 0
                 dailySteps.append(Int(steps))

@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		186D7E752E947FC900F8C751 /* .swiftlint.yml in Resources */ = {isa = PBXBuildFile; fileRef = 186D7E742E947FC000F8C751 /* .swiftlint.yml */; };
 		18C8713B2E667BD300D99233 /* FatigueManagementSystem Watch App.app in Embed Watch Content */ = {isa = PBXBuildFile; fileRef = 18C8713A2E667BD300D99233 /* FatigueManagementSystem Watch App.app */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
@@ -49,6 +50,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		186D7E742E947FC000F8C751 /* .swiftlint.yml */ = {isa = PBXFileReference; lastKnownFileType = text.yaml; path = .swiftlint.yml; sourceTree = "<group>"; };
 		18C871342E667BD300D99233 /* FatigueManagementSystem.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FatigueManagementSystem.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		18C8713A2E667BD300D99233 /* FatigueManagementSystem Watch App.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "FatigueManagementSystem Watch App.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		18C871492E667BD500D99233 /* FatigueManagementSystem Watch AppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "FatigueManagementSystem Watch AppTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -101,6 +103,7 @@
 		18C8712D2E667BD300D99233 = {
 			isa = PBXGroup;
 			children = (
+				186D7E742E947FC000F8C751 /* .swiftlint.yml */,
 				18C8713E2E667BD300D99233 /* FatigueManagementSystem Watch App */,
 				18C8714C2E667BD500D99233 /* FatigueManagementSystem Watch AppTests */,
 				18C871562E667BD500D99233 /* FatigueManagementSystem Watch AppUITests */,
@@ -152,6 +155,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				186D7E732E947D5C00F8C751 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				18C8713E2E667BD300D99233 /* FatigueManagementSystem Watch App */,
@@ -244,6 +248,9 @@
 			);
 			mainGroup = 18C8712D2E667BD300D99233;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				186D7E712E947D3E00F8C751 /* XCRemoteSwiftPackageReference "SwiftLint" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 18C871352E667BD300D99233 /* Products */;
 			projectDirPath = "";
@@ -269,6 +276,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				186D7E752E947FC900F8C751 /* .swiftlint.yml in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -313,6 +321,10 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		186D7E732E947D5C00F8C751 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			productRef = 186D7E722E947D5C00F8C751 /* SwiftLintBuildToolPlugin */;
+		};
 		18C8713D2E667BD300D99233 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 18C871392E667BD300D99233 /* FatigueManagementSystem Watch App */;
@@ -684,6 +696,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		186D7E712E947D3E00F8C751 /* XCRemoteSwiftPackageReference "SwiftLint" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/realm/SwiftLint";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 0.61.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		186D7E722E947D5C00F8C751 /* SwiftLintBuildToolPlugin */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 186D7E712E947D3E00F8C751 /* XCRemoteSwiftPackageReference "SwiftLint" */;
+			productName = "plugin:SwiftLintBuildToolPlugin";
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 18C8712E2E667BD300D99233 /* Project object */;
 }

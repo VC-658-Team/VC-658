@@ -12,10 +12,9 @@ class FatigueService {
     // MODIFIED: Changed from 'private' to 'public' to allow access from other modules.
     public let healthstore = HKHealthStore()
     public var calculator = DefaultFatigueCalculator()
-    private var notificationsAuthed: Bool = false;
-    var authorised = false;
+    private var notificationsAuthed: Bool = false
+    var authorised = false
     @Published var ready = false
-    
     
     func start(completion: @escaping (Bool) -> Void) {
         requestHKAuthorization { authorised in
@@ -30,8 +29,8 @@ class FatigueService {
                     
                 // Start observers
                 // Set ready status if successful
-                self.StartObservers { success in
-                    self.ready = success;
+                self.startObservers { success in
+                    self.ready = success
                     completion(success)
                 }
             } else {
@@ -46,8 +45,7 @@ class FatigueService {
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge]) { success, error in
             if let error = error {
                 print("Notification authorisation error: \(error.localizedDescription)")
-            }
-            else {
+            } else {
                 completion(success)
             }
         }
@@ -75,9 +73,7 @@ class FatigueService {
         healthstore.requestAuthorization(toShare: nil, read: readTypes) { success, error in
             if let error = error {
                 print("Healthkit authorization error: \(error.localizedDescription)")
-            }
-            else {
-                //changing
+            } else {
                 DispatchQueue.main.async {
                     self.calculator.addMetric(key: "sleep",
                                               value: SleepDurationMetric(weight: 4.0, healthStore: self.healthstore))
@@ -93,7 +89,7 @@ class FatigueService {
         }
     }
     
-    func StartObservers(completion: @escaping (Bool) -> Void) {
+    func startObservers(completion: @escaping (Bool) -> Void) {
         guard let type = HKQuantityType.quantityType(forIdentifier: .restingHeartRate) else {
             completion(false)
             return
@@ -111,7 +107,7 @@ class FatigueService {
                 print("Observer error: \(error)")
             }
             
-            self.CalculateScore() {
+            self.calculateScore {
                 completionHandler()
             }
             
@@ -121,10 +117,10 @@ class FatigueService {
         completion(true)
     }
     
-    func CalculateScore(completion: @escaping () -> Void) {
-        calculator.CalculateScore { [weak self] in
+    func calculateScore(completion: @escaping () -> Void) {
+        calculator.calculateScore { [weak self] in
             guard let self = self else { return }
-            if(calculator.FatigueScore > 80 && notificationsAuthed) {
+            if calculator.fatigueScore > 80 && notificationsAuthed {
                 triggerNotification()
             }
             completion()
