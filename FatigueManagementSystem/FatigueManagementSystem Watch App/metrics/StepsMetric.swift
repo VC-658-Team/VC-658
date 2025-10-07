@@ -16,7 +16,6 @@ class StepsMetric: FatigueMetric {
         self.rawValue = 0.0
         self.healthStore = healthStore
         
-        self.getRawValue {}
     }
     
     func getRawValue(completion: @escaping () -> Void) {

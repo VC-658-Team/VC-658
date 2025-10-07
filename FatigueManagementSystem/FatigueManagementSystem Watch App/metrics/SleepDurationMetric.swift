@@ -22,14 +22,10 @@ class SleepDurationMetric: FatigueMetric {
         self.baseline = 0.65
         self.rawValue = 0.0
         self.healthStore = healthStore
-        
-        self.getRawValue {}
-        
+                
     }
     
     func getRawValue(completion: @escaping () -> Void) {
-        self.rawValue = 1.0
-        
         self.getLastSleepScore { [weak self] score in
             self?.rawValue = score
             completion()
@@ -43,7 +39,7 @@ class SleepDurationMetric: FatigueMetric {
         
         let now = Date()
         let start = Date(timeIntervalSinceNow: (-24 * 60 * 60))
-        let predicate = HKQuery.predicateForSamples(withStart: start, end: now, options: .strictEndDate)
+        let predicate = HKQuery.predicateForSamples(withStart: start, end: now, options: .strictStartDate)
         
         let sortDescriptor = NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: false)
         
@@ -61,6 +57,7 @@ class SleepDurationMetric: FatigueMetric {
         }
         healthStore.execute(query)
     }
+    
     
     func calculateSleepScore(from samples: [HKCategorySample]) -> Double {
         // 1. Calculate total time for each stage
@@ -125,7 +122,7 @@ class SleepDurationMetric: FatigueMetric {
     }
     
     func normalisedValue() -> Double {
-        return rawValue
+        return 1 - rawValue
     }
     
 }

@@ -20,14 +20,15 @@ class RestingHeartRateMetric: FatigueMetric {
         self.baseline = 60.0
         self.rawValue = 0.0
         self.healthStore = healthStore
-        self.getRawValue { }
     }
+    
     func getRawValue(completion: @escaping () -> Void) {
         fetchLatest { [weak self] bpm in
             self?.rawValue = bpm ?? 0
             completion()
         }
     }
+    
     private func fetchLatest(completion: @escaping (Double?) -> Void) {
         guard let type = HKQuantityType.quantityType(forIdentifier: .restingHeartRate) else {
             completion(nil); return
