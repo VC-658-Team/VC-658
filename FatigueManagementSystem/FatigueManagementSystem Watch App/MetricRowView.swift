@@ -13,22 +13,22 @@ struct MetricRowView: View {
     let title: String
     
     var body: some View {
-        HStack(spacing: 15) {
+        HStack(spacing: 8) {
             Image(systemName: iconName)
-                .font(.title3) // Font size is okay, no change here
+                .font(.system(size: 14))
                 .foregroundColor(iconColor)
-                .frame(width: 30)
+                .frame(width: 18)
 
             Text(title)
-                .font(.system(size: 16))
+                .font(.system(size: 13))
 
             Spacer()
 
             Image(systemName: "chevron.right")
-                .font(.caption)
+                .font(.system(size: 12)).font(.system(size: 10))
                 .foregroundColor(.gray)
         }
         // CHANGED: Reduced vertical padding to make each row shorter
-        .padding(.vertical, 4)
+        .padding(.vertical, 0.5)
     }
 }

@@ -32,7 +32,7 @@ struct ContentView: View {
 //            if !viewModel.authorised {
             
 //            Text("fetching data")
-                VStack(spacing: 7) {
+                VStack(spacing: 6) {
                     // MARK: - Header with Settings Button
                     HStack {
                         NavigationLink(destination: SettingsView()) {
@@ -65,6 +65,7 @@ struct ContentView: View {
                             Text("Stress")
                                 .font(.headline)
                                 .foregroundColor(.gray)
+                                .padding(.bottom, 4)
                         }
                         .offset(y: 12)
                     }
@@ -84,8 +85,7 @@ struct ContentView: View {
                         MetricRowView(iconName: "flame.fill", iconColor: .orange, title: viewModel.caloryString)
                     }
                     .padding(.horizontal)
-                    
-                    Spacer(minLength: 1)
+                    Spacer(minLength: 0.5)
                 }
                 .padding(.top, 5)
                 // ADDED: This modifier runs code when the view first appears

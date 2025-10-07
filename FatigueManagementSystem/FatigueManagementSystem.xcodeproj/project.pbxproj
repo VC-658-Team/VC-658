@@ -155,7 +155,7 @@
 			buildRules = (
 			);
 			dependencies = (
-				186D7E732E947D5C00F8C751 /* PBXTargetDependency */,
+				D71B797B2E949531002A314F /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				18C8713E2E667BD300D99233 /* FatigueManagementSystem Watch App */,
@@ -321,10 +321,6 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
-		186D7E732E947D5C00F8C751 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			productRef = 186D7E722E947D5C00F8C751 /* SwiftLintBuildToolPlugin */;
-		};
 		18C8713D2E667BD300D99233 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = 18C871392E667BD300D99233 /* FatigueManagementSystem Watch App */;
@@ -339,6 +335,10 @@
 			isa = PBXTargetDependency;
 			target = 18C871392E667BD300D99233 /* FatigueManagementSystem Watch App */;
 			targetProxy = 18C871542E667BD500D99233 /* PBXContainerItemProxy */;
+		};
+		D71B797B2E949531002A314F /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			productRef = D71B797A2E949531002A314F /* SwiftLintBuildToolPlugin */;
 		};
 /* End PBXTargetDependency section */
 
@@ -468,6 +468,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 34AHYCFT5R;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "FatigueManagementSystem-Watch-App-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = FatigueManagementSystem;
@@ -504,6 +505,7 @@
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = 34AHYCFT5R;
 				ENABLE_PREVIEWS = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = NO;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = "FatigueManagementSystem-Watch-App-Info.plist";
 				INFOPLIST_KEY_CFBundleDisplayName = FatigueManagementSystem;
@@ -709,7 +711,7 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		186D7E722E947D5C00F8C751 /* SwiftLintBuildToolPlugin */ = {
+		D71B797A2E949531002A314F /* SwiftLintBuildToolPlugin */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 186D7E712E947D3E00F8C751 /* XCRemoteSwiftPackageReference "SwiftLint" */;
 			productName = "plugin:SwiftLintBuildToolPlugin";
