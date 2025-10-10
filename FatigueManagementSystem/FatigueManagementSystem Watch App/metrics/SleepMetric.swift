@@ -8,7 +8,7 @@
 import Foundation
 import HealthKit
 
-class SleepDurationMetric: FatigueMetric {
+class SleepMetric: FatigueMetric {
     
     let name = "sleep"
     let weight: Double
@@ -58,10 +58,9 @@ class SleepDurationMetric: FatigueMetric {
         healthStore.execute(query)
     }
     
-    
     func calculateSleepScore(from samples: [HKCategorySample]) -> Double {
         // 1. Calculate total time for each stage
-        var durationInBed: TimeInterval = 0
+        var durationAwake: TimeInterval = 0
         var durationAsleep: TimeInterval = 0
         var durationREM: TimeInterval = 0
         var durationDeep: TimeInterval = 0
@@ -69,8 +68,8 @@ class SleepDurationMetric: FatigueMetric {
         for sample in samples {
             let duration = sample.endDate.timeIntervalSince(sample.startDate)
             switch HKCategoryValueSleepAnalysis(rawValue: sample.value) {
-            case .inBed:
-                durationInBed += duration
+            case .awake:
+                    durationAwake += duration
             case .asleepREM:
                 durationREM += duration
                 durationAsleep += duration
@@ -87,8 +86,10 @@ class SleepDurationMetric: FatigueMetric {
         }
         
         // Prevent division by zero if there's no data
-        guard durationInBed > 0 else { return 0 }
+        guard durationAwake > 0 else { return 0 }
         guard durationAsleep > 0 else { return 0 }
+
+        let durationTotal = durationAsleep + durationAwake
         
         // Score each component (e.g., out of 100)
         // Score for total sleep duration (e.g., 8 hours is 100%)
@@ -96,7 +97,7 @@ class SleepDurationMetric: FatigueMetric {
         let durationScore = min((totalSleepHours / 8.0) * 100, 100)
         
         // Score for sleep efficiency (e.g., 85% efficiency is 100%)
-        let efficiency = (durationAsleep / durationInBed)
+        let efficiency = (durationAsleep / durationTotal)
         let efficiencyScore = min((efficiency / 0.85) * 100, 100)
         
         // Score for deep sleep (e.g., 20% of total sleep is 100%)
