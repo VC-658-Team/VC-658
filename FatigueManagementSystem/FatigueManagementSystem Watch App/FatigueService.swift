@@ -76,7 +76,7 @@ class FatigueService {
             } else {
                 DispatchQueue.main.async {
                     self.calculator.addMetric(key: "sleep",
-                                              value: SleepDurationMetric(weight: 4.0, healthStore: self.healthstore))
+                                              value: SleepMetric(weight: 4.0, healthStore: self.healthstore))
                     self.calculator.addMetric(key: "restingHR",
                                               value: RestingHeartRateMetric(weight: 3.0, healthStore: self.healthstore))
                     self.calculator.addMetric(key: "steps",
