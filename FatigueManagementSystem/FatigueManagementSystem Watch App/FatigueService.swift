@@ -120,7 +120,7 @@ class FatigueService {
     func calculateScore(completion: @escaping () -> Void) {
         calculator.calculateScore { [weak self] in
             guard let self = self else { return }
-            if calculator.fatigueScore > 80 && notificationsAuthed {
+            if calculator.fatigueScore > 50 && notificationsAuthed {
                 triggerNotification()
             }
             completion()
