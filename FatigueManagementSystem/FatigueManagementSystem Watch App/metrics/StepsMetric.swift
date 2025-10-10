@@ -9,18 +9,23 @@ class StepsMetric: FatigueMetric {
     var rawValue: Double
     
     let healthStore: HKHealthStore
+    private let localDataManager = LocalDataManager.shared
     
     init(weight: Double, healthStore: HKHealthStore) {
         self.weight = weight
-        self.baseline = 10000.0
-        self.rawValue = 0.0
         self.healthStore = healthStore
         
+        self.baseline = localDataManager.getBaseline(for: "steps") ?? 10000.0
+        self.rawValue = 0.0
+        
+        self.getRawValue {
+            if self.localDataManager.shouldUpdateBaseline(for: "steps") {
+                self.calculateBaseline()
+            }
+        }
     }
     
     func getRawValue(completion: @escaping () -> Void) {
-        self.rawValue = 0.0
-        
         self.getTodaySteps { [weak self] steps in
             self?.rawValue = Double(steps)
             completion()
@@ -66,9 +71,14 @@ class StepsMetric: FatigueMetric {
         self.getHistoricalStepsData { dailySteps in
             if !dailySteps.isEmpty {
                 let totalSteps = dailySteps.reduce(0, +)
-                self.baseline = Double(totalSteps / dailySteps.count)
+                let newBaseline = Double(totalSteps / dailySteps.count)
+                
+                self.baseline = newBaseline
+                self.localDataManager.saveBaseline(for: "steps", value: newBaseline)
             } else {
-                self.baseline = 10000.0
+                let defaultBaseline = 10000.0
+                self.baseline = defaultBaseline
+                self.localDataManager.saveBaseline(for: "steps", value: defaultBaseline)
             }
         }
     }
@@ -118,7 +128,8 @@ class StepsMetric: FatigueMetric {
     func normalisedValue() -> Double {
         guard baseline > 0 else { return 0.0 }
         
-        let deviation = (baseline - rawValue) / baseline
+        // More steps = more exertion = more fatigue
+        let deviation = (rawValue - baseline) / baseline
         return max(0, min(1, deviation))
     }
 }

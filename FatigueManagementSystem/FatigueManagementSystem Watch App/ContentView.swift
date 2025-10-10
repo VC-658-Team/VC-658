@@ -22,8 +22,8 @@ struct ContentView: View {
         }
     }
     
-    init(service: FatigueService) {
-        _viewModel = StateObject(wrappedValue: FatigueModel(service: service))
+    init() {
+        _viewModel = StateObject(wrappedValue: FatigueModel())
     }
     
     var body: some View {
@@ -91,7 +91,6 @@ struct ContentView: View {
                 // ADDED: This modifier runs code when the view first appears
                 .onAppear {
                     viewModel.getFatigueScore()
-                        
                 }.onReceive(viewModel.$fatigueScore) { score in
                     // 'withAnimation' makes the change smooth instead of sudden
                     withAnimation(.easeInOut(duration: 1.0)) {
