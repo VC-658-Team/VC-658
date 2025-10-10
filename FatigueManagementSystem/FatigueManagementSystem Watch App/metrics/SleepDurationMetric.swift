@@ -58,7 +58,6 @@ class SleepDurationMetric: FatigueMetric {
         healthStore.execute(query)
     }
     
-    
     func calculateSleepScore(from samples: [HKCategorySample]) -> Double {
         // 1. Calculate total time for each stage
         var durationInBed: TimeInterval = 0
