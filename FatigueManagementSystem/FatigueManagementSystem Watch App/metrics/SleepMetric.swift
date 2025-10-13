@@ -15,6 +15,7 @@ class SleepMetric: FatigueMetric {
     var baseline: Double
     var rawValue: Double
     
+    private let localDataManager = LocalDataManager.shared
     let healthStore: HKHealthStore
     
     init(weight: Double, healthStore: HKHealthStore) {

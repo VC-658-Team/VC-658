@@ -9,7 +9,8 @@ class StepsMetric: FatigueMetric {
     var rawValue: Double
     
     let healthStore: HKHealthStore
-    
+    private let localDataManager = LocalDataManager.shared
+
     init(weight: Double, healthStore: HKHealthStore) {
         self.weight = weight
         self.baseline = 10000.0
