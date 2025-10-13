@@ -19,15 +19,17 @@ struct MonthlyAverageBPMView: View {
     // MARK: - Properties
     @ObservedObject var heartRateService: HeartRateDataService
     
-    private var monthLabels: [String] {
+    private var monthLabels: [(id: String, label: String)] {
         let calendar = Calendar.current
         let formatter = DateFormatter()
         formatter.dateFormat = "MMM"
         
-        var labels: [String] = []
+        var labels: [(id: String, label: String)] = []
         for i in 0..<7 {
             if let date = calendar.date(byAdding: .month, value: -i, to: Date()) {
-                labels.append(formatter.string(from: date))
+                let monthLabel = formatter.string(from: date)
+                let uniqueId = "\(monthLabel)-\(i)" // Create unique ID
+                labels.append((id: uniqueId, label: monthLabel))
             }
         }
         return labels.reversed() // Most recent month first
@@ -100,7 +102,7 @@ struct MonthlyAverageBPMView: View {
                             .scaleEffect(0.8)
                             .frame(height: 60)
                     } else if !graphData.isEmpty {
-                        BarGraph(dataPoints: graphData)
+                        BarGraph(dataPoints: graphData, barColor: .red)
                         Rectangle().frame(height: 1).foregroundColor(.blue.opacity(0.6)) // Baseline
                     } else {
                         Text("No data")
@@ -110,8 +112,8 @@ struct MonthlyAverageBPMView: View {
                     }
                     
                     HStack {
-                        ForEach(monthLabels, id: \.self) { month in
-                            Text(month)
+                        ForEach(monthLabels, id: \.id) { month in
+                            Text(month.label)
                                 .font(.system(size: 8))
                                 .frame(maxWidth: .infinity)
                         }

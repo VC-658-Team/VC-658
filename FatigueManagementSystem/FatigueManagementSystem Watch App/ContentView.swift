@@ -8,6 +8,7 @@ import SwiftUI
 import HealthKit
 struct ContentView: View {
     @StateObject private var viewModel: FatigueModel
+    @StateObject private var settingsManager = SettingsManager.shared
     // CHANGED: Converted to @State variables to allow dynamic updates
     @State private var stressLevel: Double = 0.65
     @State private var stressValue: Int = 1
@@ -74,15 +75,34 @@ struct ContentView: View {
                     
                     // MARK: - Metrics List
                     VStack {
-                        // MODIFIED: Wrapped the heart rate row in a NavigationLink
-                        NavigationLink(destination: HeartRateDetailView()) {
-                            MetricRowView(iconName: "heart.fill", iconColor: .red, title: viewModel.restingHRString)
+                        // Dynamic metrics based on settings
+                        if settingsManager.isMetricEnabled(.heartRate) {
+                            NavigationLink(destination: HeartRateDetailView(fatigueModel: viewModel)) {
+                                MetricRowView(iconName: MetricType.heartRate.iconName, iconColor: MetricType.heartRate.iconColor, title: viewModel.restingHRString)
+                            }
+                            .buttonStyle(PlainButtonStyle())
                         }
-                        .buttonStyle(PlainButtonStyle()) // Ensures the whole row is tappable without changing its style
-
-                        MetricRowView(iconName: "bed.double.fill", iconColor: .blue, title: viewModel.sleepString)
-                        MetricRowView(iconName: "figure.walk", iconColor: .green, title: viewModel.stepsString)
-                        MetricRowView(iconName: "flame.fill", iconColor: .orange, title: viewModel.caloryString)
+                        
+                        if settingsManager.isMetricEnabled(.sleep) {
+                            NavigationLink(destination: SleepDetailView(fatigueModel: viewModel)) {
+                                MetricRowView(iconName: MetricType.sleep.iconName, iconColor: MetricType.sleep.iconColor, title: viewModel.sleepString)
+                            }
+                            .buttonStyle(PlainButtonStyle())
+                        }
+                        
+                        if settingsManager.isMetricEnabled(.steps) {
+                            NavigationLink(destination: StepsDetailView(fatigueModel: viewModel)) {
+                                MetricRowView(iconName: MetricType.steps.iconName, iconColor: MetricType.steps.iconColor, title: viewModel.stepsString)
+                            }
+                            .buttonStyle(PlainButtonStyle())
+                        }
+                        
+                        if settingsManager.isMetricEnabled(.calories) {
+                            NavigationLink(destination: CaloriesDetailView(fatigueModel: viewModel)) {
+                                MetricRowView(iconName: MetricType.calories.iconName, iconColor: MetricType.calories.iconColor, title: viewModel.caloryString)
+                            }
+                            .buttonStyle(PlainButtonStyle())
+                        }
                     }
                     .padding(.horizontal)
                     Spacer(minLength: 0.5)

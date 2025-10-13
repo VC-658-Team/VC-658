@@ -58,5 +58,139 @@ class RestingHeartRateMetric: FatigueMetric {
         let clamped = max(min(rawValue, maxHR), minHR)
         return (clamped - minHR) / (maxHR - minHR)
     }
+    
+    // MARK: - Additional Data Methods for Charts
+    
+    /// Get historical resting heart rate data for the last 30 days
+    func getHistoricalRestingHRData(completion: @escaping ([Double]) -> Void) {
+        guard let rhrType = HKQuantityType.quantityType(forIdentifier: .restingHeartRate) else {
+            completion([])
+            return
+        }
+        
+        var dailyRHRValues: [Double] = []
+        let calendar = Calendar.current
+        let endDate = Date()
+        let numberOfDays = 30
+        
+        let group = DispatchGroup()
+        
+        for i in 1..<numberOfDays {
+            guard let dayStart = calendar.date(byAdding: .day, value: -i, to: endDate),
+                  let dayEnd = calendar.date(byAdding: .day, value: 1, to: dayStart) else {
+                continue
+            }
+            
+            group.enter()
+            
+            let predicate = HKQuery.predicateForSamples(withStart: dayStart, end: dayEnd, options: .strictStartDate)
+            let sortDescriptor = NSSortDescriptor(key: HKSampleSortIdentifierEndDate, ascending: false)
+            
+            let query = HKSampleQuery(sampleType: rhrType,
+                                      predicate: predicate,
+                                      limit: 1,
+                                      sortDescriptors: [sortDescriptor]) { _, samples, _ in
+                if let sample = samples?.first as? HKQuantitySample {
+                    let bpm = sample.quantity.doubleValue(for: HKUnit.count().unitDivided(by: .minute()))
+                    dailyRHRValues.append(bpm)
+                } else {
+                    dailyRHRValues.append(0.0)
+                }
+                group.leave()
+            }
+            
+            self.healthStore.execute(query)
+        }
+        
+        group.notify(queue: .main) {
+            completion(dailyRHRValues)
+        }
+    }
+    
+    /// Get weekly averages for the last 7 days
+    func getWeeklyAverages(completion: @escaping ([Double]) -> Void) {
+        guard let rhrType = HKQuantityType.quantityType(forIdentifier: .restingHeartRate) else {
+            completion([])
+            return
+        }
+        
+        var weeklyAverages: [Double] = []
+        let calendar = Calendar.current
+        let group = DispatchGroup()
+        
+        for i in 0..<7 {
+            guard let dayStart = calendar.date(byAdding: .day, value: -i, to: Date()),
+                  let dayEnd = calendar.date(byAdding: .day, value: 1, to: dayStart) else {
+                continue
+            }
+            
+            group.enter()
+            
+            let predicate = HKQuery.predicateForSamples(withStart: dayStart, end: dayEnd, options: .strictStartDate)
+            let sortDescriptor = NSSortDescriptor(key: HKSampleSortIdentifierEndDate, ascending: false)
+            
+            let query = HKSampleQuery(sampleType: rhrType,
+                                      predicate: predicate,
+                                      limit: 1,
+                                      sortDescriptors: [sortDescriptor]) { _, samples, _ in
+                if let sample = samples?.first as? HKQuantitySample {
+                    let bpm = sample.quantity.doubleValue(for: HKUnit.count().unitDivided(by: .minute()))
+                    weeklyAverages.append(bpm)
+                } else {
+                    weeklyAverages.append(0.0)
+                }
+                group.leave()
+            }
+            
+            self.healthStore.execute(query)
+        }
+        
+        group.notify(queue: .main) {
+            completion(weeklyAverages.reversed()) // Most recent day first
+        }
+    }
+    
+    /// Get monthly averages for the last 7 months
+    func getMonthlyAverages(completion: @escaping ([Double]) -> Void) {
+        guard let rhrType = HKQuantityType.quantityType(forIdentifier: .restingHeartRate) else {
+            completion([])
+            return
+        }
+        
+        var monthlyAverages: [Double] = []
+        let calendar = Calendar.current
+        let group = DispatchGroup()
+        
+        for i in 0..<7 {
+            guard let monthStart = calendar.date(byAdding: .month, value: -i, to: Date()),
+                  let monthEnd = calendar.date(byAdding: .month, value: 1, to: monthStart) else {
+                continue
+            }
+            
+            group.enter()
+            
+            let predicate = HKQuery.predicateForSamples(withStart: monthStart, end: monthEnd, options: .strictStartDate)
+            let sortDescriptor = NSSortDescriptor(key: HKSampleSortIdentifierEndDate, ascending: false)
+            
+            let query = HKSampleQuery(sampleType: rhrType,
+                                      predicate: predicate,
+                                      limit: 1,
+                                      sortDescriptors: [sortDescriptor]) { _, samples, _ in
+                if let sample = samples?.first as? HKQuantitySample {
+                    let bpm = sample.quantity.doubleValue(for: HKUnit.count().unitDivided(by: .minute()))
+                    monthlyAverages.append(bpm)
+                } else {
+                    monthlyAverages.append(0.0)
+                }
+                group.leave()
+            }
+            
+            self.healthStore.execute(query)
+        }
+        
+        group.notify(queue: .main) {
+            completion(monthlyAverages.reversed()) // Most recent month first
+        }
+    }
 
 }

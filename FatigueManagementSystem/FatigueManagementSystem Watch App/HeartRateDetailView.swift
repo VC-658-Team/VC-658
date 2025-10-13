@@ -9,12 +9,14 @@ import SwiftUI
 import HealthKit
 
 struct HeartRateDetailView: View {
+    @ObservedObject var fatigueModel: FatigueModel
     @StateObject private var heartRateService: HeartRateDataService
     
-    init() {
-        // Initialize with the shared health store and resting HR metric
-        let healthStore = HKHealthStore()
-        let restingHRMetric = RestingHeartRateMetric(weight: 3.0, healthStore: healthStore)
+    init(fatigueModel: FatigueModel) {
+        self.fatigueModel = fatigueModel
+        // Initialize with the existing health store and resting HR metric from FatigueModel
+        let healthStore = fatigueModel.service.healthstore
+        let restingHRMetric = fatigueModel.service.calculator.metrics["Resting Heart Rate"] as? RestingHeartRateMetric ?? RestingHeartRateMetric(weight: 3.0, healthStore: healthStore)
         _heartRateService = StateObject(wrappedValue: HeartRateDataService(healthStore: healthStore, restingHRMetric: restingHRMetric))
     }
     
@@ -36,6 +38,15 @@ struct HeartRateDetailView: View {
             await heartRateService.fetchDailyHeartRateData()
             await heartRateService.fetchWeeklyAverages()
             await heartRateService.fetchMonthlyAverages()
+        }
+        .onAppear {
+            // Use the current heart rate from FatigueModel if available
+            if let restingHRMetric = fatigueModel.service.calculator.metrics["Resting Heart Rate"] as? RestingHeartRateMetric {
+                heartRateService.currentHeartRate = restingHRMetric.rawValue
+                print("DEBUG: Using existing heart rate data: \(restingHRMetric.rawValue)")
+            } else {
+                print("DEBUG: No existing heart rate data found")
+            }
         }
     }
 }
@@ -129,10 +140,12 @@ struct DailyHeartRateView: View {
             HStack(spacing: 0) {
                 VStack(alignment: .leading) {
                     Text(dayFormatter.string(from: Date()))
-                        .font(.headline)
+                        .font(.system(size: 12, weight: .medium))
+                        .lineLimit(1)
                     Text(dateFormatter.string(from: Date()))
-                        .font(.subheadline)
+                        .font(.system(size: 10))
                         .foregroundColor(.gray)
+                        .lineLimit(1)
                 }
                 Spacer()
             }
@@ -149,7 +162,10 @@ struct DailyHeartRateView: View {
 struct HeartRateDetailView_Previews: PreviewProvider {
     static var previews: some View {
         NavigationStack {
-            HeartRateDetailView()
+            let healthStore = HKHealthStore()
+            let service = FatigueService()
+            let fatigueModel = FatigueModel(service: service)
+            HeartRateDetailView(fatigueModel: fatigueModel)
         }
     }
 }

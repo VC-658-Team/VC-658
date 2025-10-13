@@ -8,24 +8,59 @@
 import SwiftUI
 
 struct SettingsView: View {
-    // @State variables to hold the toggle states.
-    // The state is saved only while the app is running.
-    @State private var areAlertsEnabled: Bool = true
-    @State private var areHapticsEnabled: Bool = true
-
+    @StateObject private var settingsManager = SettingsManager.shared
+    
     var body: some View {
-        VStack(alignment: .leading, spacing: 15) {
-            // A toggle is a standard UI element for on/off switches.
-            Toggle("Enable Alerts", isOn: $areAlertsEnabled)
-            
-            Toggle("Enable Haptics", isOn: $areHapticsEnabled)
-            
-            Spacer()
+        ScrollView {
+            VStack(alignment: .leading, spacing: 15) {
+                // MARK: - App Settings Section (No Header)
+                VStack(alignment: .leading, spacing: 8) {
+                    Toggle("Enable Alerts", isOn: Binding(
+                        get: { settingsManager.areAlertsEnabled },
+                        set: { settingsManager.setAlertsEnabled($0) }
+                    ))
+                    
+                    Toggle("Enable Haptics", isOn: Binding(
+                        get: { settingsManager.areHapticsEnabled },
+                        set: { settingsManager.setHapticsEnabled($0) }
+                    ))
+                }
+                .padding(.bottom, 10)
+                
+                Divider()
+                
+                // MARK: - Metric Selection Section
+                VStack(alignment: .leading, spacing: 8) {
+                    Text("Displayed Metrics")
+                        .font(.headline)
+                        .foregroundColor(.primary)
+                    
+                    ForEach(MetricType.allCases, id: \.self) { metric in
+                        HStack {
+                            Image(systemName: metric.iconName)
+                                .foregroundColor(metric.iconColor)
+                                .frame(width: 20)
+                            
+                            Text(metric.displayName)
+                                .font(.system(size: 14))
+                            
+                            Spacer()
+                            
+                            Toggle("", isOn: Binding(
+                                get: { settingsManager.isMetricEnabled(metric) },
+                                set: { settingsManager.setMetricEnabled(metric, enabled: $0) }
+                            ))
+                            .toggleStyle(SwitchToggleStyle(tint: .blue))
+                        }
+                        .padding(.vertical, 2)
+                    }
+                }
+                
+                Spacer()
+            }
+            .padding()
         }
-        // Adds a title to the top of the settings screen.
         .navigationTitle("Settings")
-        // Adds a little padding from the screen edges.
-        .padding()
     }
 }
 

@@ -126,4 +126,54 @@ class SleepMetric: FatigueMetric {
         return 1 - rawValue
     }
     
+    // MARK: - Additional Data Methods for Charts
+    
+    /// Get historical sleep data for the last 30 days
+    func getHistoricalSleepData(completion: @escaping ([Double]) -> Void) {
+        guard let sleepType = HKObjectType.categoryType(forIdentifier: .sleepAnalysis) else {
+            completion([])
+            return
+        }
+        
+        var dailySleepScores: [Double] = []
+        let calendar = Calendar.current
+        let endDate = Date()
+        let numberOfDays = 30
+        
+        let group = DispatchGroup()
+        
+        for i in 1..<numberOfDays {
+            guard let dayStart = calendar.date(byAdding: .day, value: -i, to: endDate),
+                  let dayEnd = calendar.date(byAdding: .day, value: 1, to: dayStart) else {
+                continue
+            }
+            
+            group.enter()
+            
+            let predicate = HKQuery.predicateForSamples(withStart: dayStart, end: dayEnd, options: .strictStartDate)
+            let sortDescriptor = NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: false)
+            
+            let query = HKSampleQuery(sampleType: sleepType,
+                                      predicate: predicate,
+                                      limit: HKObjectQueryNoLimit,
+                                      sortDescriptors: [sortDescriptor]) { [weak self] _, samples, _ in
+                guard let self = self, let samples = samples as? [HKCategorySample] else {
+                    dailySleepScores.append(0.0)
+                    group.leave()
+                    return
+                }
+                
+                let sleepScore = self.calculateSleepScore(from: samples)
+                dailySleepScores.append(sleepScore)
+                group.leave()
+            }
+            
+            self.healthStore.execute(query)
+        }
+        
+        group.notify(queue: .main) {
+            completion(dailySleepScores)
+        }
+    }
+    
 }

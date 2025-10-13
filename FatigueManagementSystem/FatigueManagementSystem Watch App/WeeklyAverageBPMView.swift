@@ -88,7 +88,7 @@ struct WeeklyAverageBPMView: View {
                             .scaleEffect(0.8)
                             .frame(height: 60)
                     } else if !graphData.isEmpty {
-                        BarGraph(dataPoints: graphData)
+                        BarGraph(dataPoints: graphData, barColor: .red)
                         Rectangle().frame(height: 1).foregroundColor(.blue.opacity(0.6)) // Baseline
                     } else {
                         Text("No data")

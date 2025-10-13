@@ -20,12 +20,14 @@ struct MetricRowView: View {
                 .frame(width: 18)
 
             Text(title)
-                .font(.system(size: 13))
+                .font(.system(size: 12))
+                .lineLimit(1)
+                .minimumScaleFactor(0.8)
 
             Spacer()
 
             Image(systemName: "chevron.right")
-                .font(.system(size: 12)).font(.system(size: 10))
+                .font(.system(size: 10))
                 .foregroundColor(.gray)
         }
         // CHANGED: Reduced vertical padding to make each row shorter

@@ -16,6 +16,12 @@ import SwiftUI
 struct BarGraph: View {
     // An array of values (normalized between 0.0 and 1.0) to plot as bars.
     let dataPoints: [CGFloat]
+    let barColor: Color
+    
+    init(dataPoints: [CGFloat], barColor: Color = .red) {
+        self.dataPoints = dataPoints
+        self.barColor = barColor
+    }
     
     var body: some View {
         GeometryReader { geometry in
@@ -24,7 +30,7 @@ struct BarGraph: View {
                     let barHeight = geometry.size.height * self.dataPoints[index]
                     
                     RoundedRectangle(cornerRadius: 2)
-                        .fill(Color.red)
+                        .fill(barColor)
                         .frame(height: barHeight)
                 }
             }
