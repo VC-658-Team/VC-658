@@ -21,7 +21,7 @@ struct SleepMetricTests {
     @Test func testSleepMetricInitialisation() async throws {
         #expect(sleepMetric.name == "sleep")
         #expect(sleepMetric.weight == 4)
-        #expect(sleepMetric.baseline == 0.65)
+        #expect(sleepMetric.baseline == 0.8)
         #expect(sleepMetric.rawValue == 0.0)
     }
     
@@ -31,8 +31,7 @@ struct SleepMetricTests {
         
         let normalised = sleepMetric.normalisedValue()
         
-        // Sleep normalization returns 1 - rawValue
-        #expect(normalised == 0.6)
+        #expect(normalised == 0.5)
     }
     
     @Test func testSleepWeightedScore() async throws {
@@ -40,8 +39,7 @@ struct SleepMetricTests {
         sleepMetric.baseline = 0.8
         
         let weightedScore = sleepMetric.weightedScore()
-        // Sleep normalization returns 1 - rawValue = 1 - 0.4 = 0.6
-        let expectedScore = 0.6 * 4
+        let expectedScore = 0.5 * 4
         #expect(weightedScore == expectedScore)
         
     }

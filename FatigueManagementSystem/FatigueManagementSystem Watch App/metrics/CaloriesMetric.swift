@@ -7,20 +7,11 @@ class CaloriesMetric: FatigueMetric {
     var baseline: Double
     var rawValue: Double
     let healthStore: HKHealthStore
-    private let localDataManager = LocalDataManager.shared
-    
     init(weight: Double, healthStore: HKHealthStore) {
         self.weight = weight
-        self.healthStore = healthStore
-        
-        self.baseline = localDataManager.getBaseline(for: "calories") ?? 500.0
+        self.baseline = 500.0
         self.rawValue = 0.0
-        
-        self.getRawValue {
-            if self.localDataManager.shouldUpdateBaseline(for: "calories") {
-                self.calculateBaseline()
-            }
-        }
+        self.healthStore = healthStore
     }
     
     func getRawValue(completion: @escaping () -> Void) {
@@ -69,14 +60,9 @@ class CaloriesMetric: FatigueMetric {
         self.getHistoricalCaloriesData { dailyCalories in
             if !dailyCalories.isEmpty {
                 let totalCalories = dailyCalories.reduce(0, +)
-                let newBaseline = totalCalories / Double(dailyCalories.count)
-                
-                self.baseline = newBaseline
-                self.localDataManager.saveBaseline(for: "calories", value: newBaseline)
+                self.baseline = totalCalories / Double(dailyCalories.count)
             } else {
-                let defaultBaseline = 500.0
-                self.baseline = defaultBaseline
-                self.localDataManager.saveBaseline(for: "calories", value: defaultBaseline)
+                self.baseline = 500.0
             }
         }
     }
@@ -94,7 +80,7 @@ class CaloriesMetric: FatigueMetric {
 
         let group = DispatchGroup()
 
-        for day in 1..<numberOfDays {
+        for day in 0..<numberOfDays {
             guard let dayStart = calendar.date(byAdding: .day, value: -day, to: endDate),
                   let dayEnd = calendar.date(byAdding: .day, value: 1, to: dayStart) else {
                 continue
@@ -125,9 +111,8 @@ class CaloriesMetric: FatigueMetric {
 
     func normalisedValue() -> Double {
         guard baseline > 0 else { return 0.0 }
-        
-        // More calories burned = more exertion = more fatigue
-        let deviation = (rawValue - baseline) / baseline
+
+        let deviation = (baseline - rawValue) / baseline
         return max(0, min(1, deviation))
     }
 }

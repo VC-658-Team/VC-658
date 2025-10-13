@@ -2,28 +2,28 @@ import Foundation
 import UserNotifications
 
 class DefaultFatigueCalculator: FatigueCalculator {
-    var Metrics: [String: FatigueMetric]
+    var metrics: [String: FatigueMetric]
      
      var fatigueScore: Int = 0
          
      // Store metrics as a key-value pair dictionary
      init() {
-         Metrics = [:]
+         metrics = [:]
      }
      // Add metric to dictionary using key parameter
      func addMetric(key: String, value: any FatigueMetric) {
-         Metrics.updateValue(value, forKey: key)
+         metrics.updateValue(value, forKey: key)
      }
     
      // Return selected metric using key parameter
      // check if metric is not set
-     func GetMetric(key: String) -> any FatigueMetric {
-         return Metrics[key]!
+     func getMetric(key: String) -> any FatigueMetric {
+         return metrics[key]!
      }
     
      // Calculate fatigue score
-     func CalculateScore(completion: @escaping () -> Void) {
-         let allMetrics = Array(Metrics.values)
+     func calculateScore(completion: @escaping () -> Void) {
+         let allMetrics = Array(metrics.values)
          guard !allMetrics.isEmpty else {
              completion()
              return
@@ -56,10 +56,6 @@ class DefaultFatigueCalculator: FatigueCalculator {
 
              completion()
          }
-     }
-     
-     func getFatigueScore() -> Int {
-         return fatigueScore
      }
      
  }

@@ -16,20 +16,13 @@ class SleepMetric: FatigueMetric {
     var rawValue: Double
     
     let healthStore: HKHealthStore
-    private let localDataManager = LocalDataManager.shared
     
     init(weight: Double, healthStore: HKHealthStore) {
-        self.weight = weight;
-        self.healthStore = healthStore
-        
-        self.baseline = localDataManager.getBaseline(for: "sleep") ?? 0.65
+        self.weight = weight
+        self.baseline = 0.65
         self.rawValue = 0.0
-        
-        self.getRawValue {
-            if self.localDataManager.shouldUpdateBaseline(for: "sleep") {
-                self.calculateBaseline()
-            }
-        }
+        self.healthStore = healthStore
+                
     }
     
     func getRawValue(completion: @escaping () -> Void) {
@@ -123,67 +116,10 @@ class SleepMetric: FatigueMetric {
         return finalScore.rounded() / 100
     }
     
-    func getHistoricalSleepData(completion: @escaping ([Double]) -> Void) {
-        guard let sleepType = HKObjectType.categoryType(forIdentifier: .sleepAnalysis) else {
-            completion([])
-            return
-        }
-        
-        var dailySleepScores: [Double] = []
-        let calendar = Calendar.current
-        let endDate = Date()
-        let numberOfDays = 30
-        
-        let group = DispatchGroup()
-        
-        for i in 1..<numberOfDays {
-            guard let dayStart = calendar.date(byAdding: .day, value: -i, to: endDate),
-                  let dayEnd = calendar.date(byAdding: .day, value: 1, to: dayStart) else {
-                continue
-            }
-            
-            group.enter()
-            
-            let predicate = HKQuery.predicateForSamples(withStart: dayStart, end: dayEnd, options: .strictStartDate)
-            let sortDescriptor = NSSortDescriptor(key: HKSampleSortIdentifierStartDate, ascending: false)
-            
-            let query = HKSampleQuery(sampleType: sleepType,
-                                      predicate: predicate,
-                                      limit: HKObjectQueryNoLimit,
-                                      sortDescriptors: [sortDescriptor]) { [weak self] _, samples, _ in
-                guard let self = self, let samples = samples as? [HKCategorySample] else {
-                    dailySleepScores.append(0.0)
-                    group.leave()
-                    return
-                }
-                
-                let sleepScore = self.calculateSleepScore(from: samples)
-                dailySleepScores.append(sleepScore)
-                group.leave()
-            }
-            
-            self.healthStore.execute(query)
-        }
-        
-        group.notify(queue: .main) {
-            completion(dailySleepScores)
-        }
-    }
-
     func calculateBaseline() {
-        self.getHistoricalSleepData { dailySleepScores in
-            if !dailySleepScores.isEmpty {
-                let totalScores = dailySleepScores.reduce(0, +)
-                let newBaseline = totalScores / Double(dailySleepScores.count)
-                
-                self.baseline = newBaseline
-                self.localDataManager.saveBaseline(for: "sleep", value: newBaseline)
-            } else {
-                let defaultBaseline = 0.65
-                self.baseline = defaultBaseline
-                self.localDataManager.saveBaseline(for: "sleep", value: defaultBaseline)
-            }
-        }
+        // get historical data
+        // else choose average value
+        baseline = 0.5
     }
     
     func normalisedValue() -> Double {
