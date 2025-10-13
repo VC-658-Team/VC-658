@@ -18,6 +18,8 @@ class RestingHeartRateMetric: FatigueMetric {
     
     init(weight: Double, healthStore: HKHealthStore) {
         self.weight = weight
+        self.baseline = 60.0
+        self.rawValue = 0.0
         self.healthStore = healthStore
         
         self.baseline = localDataManager.getBaseline(for: "restingHR") ?? 60.0
@@ -103,19 +105,7 @@ class RestingHeartRateMetric: FatigueMetric {
     }
     
     func calculateBaseline() {
-        self.getHistoricalRestingHRData { dailyRHRValues in
-            if !dailyRHRValues.isEmpty {
-                let totalRHR = dailyRHRValues.reduce(0, +)
-                let newBaseline = totalRHR / Double(dailyRHRValues.count)
-                
-                self.baseline = newBaseline
-                self.localDataManager.saveBaseline(for: "restingHR", value: newBaseline)
-            } else {
-                let defaultBaseline = 60.0
-                self.baseline = defaultBaseline
-                self.localDataManager.saveBaseline(for: "restingHR", value: defaultBaseline)
-            }
-        }
+        baseline = 60.0
     }
 
     func normalisedValue() -> Double {

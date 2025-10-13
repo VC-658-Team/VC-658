@@ -11,6 +11,8 @@ class CaloriesMetric: FatigueMetric {
     
     init(weight: Double, healthStore: HKHealthStore) {
         self.weight = weight
+        self.baseline = 500.0
+        self.rawValue = 0.0
         self.healthStore = healthStore
         
         self.baseline = localDataManager.getBaseline(for: "calories") ?? 500.0
@@ -69,14 +71,9 @@ class CaloriesMetric: FatigueMetric {
         self.getHistoricalCaloriesData { dailyCalories in
             if !dailyCalories.isEmpty {
                 let totalCalories = dailyCalories.reduce(0, +)
-                let newBaseline = totalCalories / Double(dailyCalories.count)
-                
-                self.baseline = newBaseline
-                self.localDataManager.saveBaseline(for: "calories", value: newBaseline)
+                self.baseline = totalCalories / Double(dailyCalories.count)
             } else {
-                let defaultBaseline = 500.0
-                self.baseline = defaultBaseline
-                self.localDataManager.saveBaseline(for: "calories", value: defaultBaseline)
+                self.baseline = 500.0
             }
         }
     }

@@ -24,6 +24,7 @@ struct ContentView: View {
     
     init(service: FatigueService) {
         _viewModel = StateObject(wrappedValue: FatigueModel(service: service))
+        _viewModel = StateObject(wrappedValue: FatigueModel(service: service))
     }
     
     var body: some View {

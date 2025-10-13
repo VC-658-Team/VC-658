@@ -32,6 +32,7 @@ class FatigueModel: ObservableObject {
             sleepString = "Score: O"
             return
         }
+    
         sleepString = "Score: \(Int(sleepMetric.rawValue * 100))"
     }
     
