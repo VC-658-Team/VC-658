@@ -7,6 +7,7 @@
 
 import HealthKit
 import UserNotifications
+import Combine
 
 class FatigueService {
     // MODIFIED: Changed from 'private' to 'public' to allow access from other modules.
