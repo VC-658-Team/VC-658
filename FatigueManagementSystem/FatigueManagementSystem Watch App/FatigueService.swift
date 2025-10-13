@@ -122,9 +122,9 @@ class FatigueService {
         calculator.calculateScore { [weak self] in
             guard let self = self else { return }
             triggerNotification()
-//            if calculator.fatigueScore > 50 && notificationsAuthed {
-//                triggerNotification()
-//            }
+            if calculator.fatigueScore > 80 && notificationsAuthed {
+                triggerNotification()
+            }
             completion()
         }
     }

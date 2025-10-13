@@ -10,7 +10,6 @@ import Combine
 
 class FatigueModel: ObservableObject {
     private let healthstore = HKHealthStore()
-    private var calculator = DefaultFatigueCalculator()
     private let localDataManager = LocalDataManager.shared
     @Published var authorised = false
     @Published var fatigueScore = 0
@@ -28,7 +27,7 @@ class FatigueModel: ObservableObject {
 
     }
     
-    func SetSleepString() {
+    func setSleepString() {
         guard let sleepMetric = service.calculator.metrics["sleep"] else {
             sleepString = "Score: O"
             return
@@ -36,16 +35,16 @@ class FatigueModel: ObservableObject {
         sleepString = "Score: \(Int(sleepMetric.rawValue * 100))"
     }
     
-    func SetRestingHRString() {
-        if let rhr = calculator.metrics["restingHR"]?.rawValue, rhr > 0 {
+    func setRestingHRString() {
+        if let rhr = service.calculator.metrics["restingHR"]?.rawValue, rhr > 0 {
             restingHRString = "\(Int(rhr)) bpm"
         } else {
             restingHRString = "-- bpm"
         }
     }
 
-    func SetStepsString() {
-        guard let stepsMetric = service.calculator.Metrics["steps"] else {
+    func setStepsString() {
+        guard let stepsMetric = service.calculator.metrics["steps"] else {
             stepsString = "0 steps"
             return
         }
@@ -57,8 +56,8 @@ class FatigueModel: ObservableObject {
         }
     }
     
-    func SetCaloriesString() {
-        guard let caloriesMetric = service.calculator.Metrics["calories"] else {
+    func setCaloriesString() {
+        guard let caloriesMetric = service.calculator.metrics["calories"] else {
             caloryString = "0 cal"
             return
         }
@@ -74,30 +73,33 @@ class FatigueModel: ObservableObject {
         return caloryString
     }
     
-    func getFatigueScore() -> Int {
-        fatigueScore = calculator.getFatigueScore()
-        
-        if fatigueScore > 80 {
-            triggerNotification()
+    func getFatigueScore() {
+        service.calculateScore { [weak self] in
+            guard let self = self else { return }
+            DispatchQueue.main.async {
+                self.fatigueScore = self.service.calculator.fatigueScore
+                
+                self.setSleepString()
+                self.setRestingHRString()
+                self.setStepsString()
+                self.setCaloriesString()
+                
+                self.localDataManager.saveDailyFatigueScore(self.fatigueScore)
+                self.localDataManager.clearOldData()
+                
+            }
         }
-        
-        localDataManager.saveDailyFatigueScore(fatigueScore)
-        localDataManager.clearOldData()
-        
-        return fatigueScore
     }
     
-    func GetWeeklyAverageFatigue() -> Double {
+    func getWeeklyAverageFatigue() -> Double {
         return localDataManager.getWeeklyAverageFatigue()
     }
     
-    func GetMonthlyAverageFatigue() -> Double {
+    func getMonthlyAverageFatigue() -> Double {
         return localDataManager.getMonthlyAverageFatigue()
     }
     
-    func GetFatigueTrend() -> [Int] {
+    func getFatigueTrend() -> [Int] {
         return localDataManager.getFatigueTrend()
     }
 }
-
-

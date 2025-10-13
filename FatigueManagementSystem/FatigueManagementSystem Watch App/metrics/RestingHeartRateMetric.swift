@@ -13,7 +13,7 @@ class RestingHeartRateMetric: FatigueMetric {
     var baseline: Double
     var rawValue: Double = 0.0
     
-    private let healthStore:HKHealthStore
+    private let healthStore: HKHealthStore
     private let localDataManager = LocalDataManager.shared
     
     init(weight: Double, healthStore: HKHealthStore) {
@@ -70,8 +70,8 @@ class RestingHeartRateMetric: FatigueMetric {
         
         let group = DispatchGroup()
         
-        for i in 0..<numberOfDays {
-            guard let dayStart = calendar.date(byAdding: .day, value: -i, to: endDate),
+        for day in 0..<numberOfDays {
+            guard let dayStart = calendar.date(byAdding: .day, value: -day, to: endDate),
                   let dayEnd = calendar.date(byAdding: .day, value: 1, to: dayStart) else {
                 continue
             }

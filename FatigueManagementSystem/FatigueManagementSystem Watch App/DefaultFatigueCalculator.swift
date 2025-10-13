@@ -59,7 +59,7 @@ class DefaultFatigueCalculator: FatigueCalculator {
      }
      
      func getFatigueScore() -> Int {
-         return FatigueScore
+         return fatigueScore
      }
      
  }

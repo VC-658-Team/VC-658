@@ -19,7 +19,7 @@ class SleepMetric: FatigueMetric {
     private let localDataManager = LocalDataManager.shared
     
     init(weight: Double, healthStore: HKHealthStore) {
-        self.weight = weight;
+        self.weight = weight
         self.healthStore = healthStore
         
         self.baseline = localDataManager.getBaseline(for: "sleep") ?? 0.65
@@ -136,8 +136,8 @@ class SleepMetric: FatigueMetric {
         
         let group = DispatchGroup()
         
-        for i in 0..<numberOfDays {
-            guard let dayStart = calendar.date(byAdding: .day, value: -i, to: endDate),
+        for day in 0..<numberOfDays {
+            guard let dayStart = calendar.date(byAdding: .day, value: -day, to: endDate),
                   let dayEnd = calendar.date(byAdding: .day, value: 1, to: dayStart) else {
                 continue
             }

@@ -131,8 +131,8 @@ class LocalDataManager {
         let sevenDaysAgo = calendar.date(byAdding: .day, value: -7, to: Date()) ?? Date()
         
         var trend: [Int] = []
-        for i in 0..<7 {
-            guard let day = calendar.date(byAdding: .day, value: -i, to: Date()) else { continue }
+        for day in 0..<7 {
+            guard let day = calendar.date(byAdding: .day, value: -day, to: Date()) else { continue }
             trend.append(scores[day] ?? 0)
         }
         
