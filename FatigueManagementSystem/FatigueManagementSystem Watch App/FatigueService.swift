@@ -7,7 +7,6 @@
 
 import HealthKit
 import UserNotifications
-import Combine
 
 class FatigueService {
     // MODIFIED: Changed from 'private' to 'public' to allow access from other modules.
@@ -78,7 +77,7 @@ class FatigueService {
                 DispatchQueue.main.async {
                     self.calculator.addMetric(key: "sleep",
                                               value: SleepMetric(weight: 4.0, healthStore: self.healthstore))
-                    self.calculator.addMetric(key: "Resting Heart Rate",
+                    self.calculator.addMetric(key: "restingHR",
                                               value: RestingHeartRateMetric(weight: 3.0, healthStore: self.healthstore))
                     self.calculator.addMetric(key: "steps",
                                               value: StepsMetric(weight: 2.0, healthStore: self.healthstore))
@@ -119,7 +118,7 @@ class FatigueService {
     }
     
     func calculateScore(completion: @escaping () -> Void) {
-        calculator.CalculateScore { [weak self] in
+        calculator.calculateScore { [weak self] in
             guard let self = self else { return }
             triggerNotification()
 //            if calculator.fatigueScore > 50 && notificationsAuthed {

@@ -12,22 +12,14 @@ class RestingHeartRateMetric: FatigueMetric {
     let weight: Double
     var baseline: Double
     var rawValue: Double = 0.0
-    
-    private let healthStore:HKHealthStore
-    private let localDataManager = LocalDataManager.shared
-    
+
+    private let healthStore: HKHealthStore
+
     init(weight: Double, healthStore: HKHealthStore) {
         self.weight = weight
-        self.healthStore = healthStore
-        
-        self.baseline = localDataManager.getBaseline(for: "restingHR") ?? 60.0
+        self.baseline = 60.0
         self.rawValue = 0.0
-        
-        self.getRawValue {
-            if self.localDataManager.shouldUpdateBaseline(for: "restingHR") {
-                self.calculateBaseline()
-            }
-        }
+        self.healthStore = healthStore
     }
     
     func getRawValue(completion: @escaping () -> Void) {
@@ -56,66 +48,9 @@ class RestingHeartRateMetric: FatigueMetric {
         }
         healthStore.execute(query)
     }
-    
-    func getHistoricalRestingHRData(completion: @escaping ([Double]) -> Void) {
-        guard let rhrType = HKQuantityType.quantityType(forIdentifier: .restingHeartRate) else {
-            completion([])
-            return
-        }
-        
-        var dailyRHRValues: [Double] = []
-        let calendar = Calendar.current
-        let endDate = Date()
-        let numberOfDays = 30
-        
-        let group = DispatchGroup()
-        
-        for i in 0..<numberOfDays {
-            guard let dayStart = calendar.date(byAdding: .day, value: -i, to: endDate),
-                  let dayEnd = calendar.date(byAdding: .day, value: 1, to: dayStart) else {
-                continue
-            }
-            
-            group.enter()
-            
-            let predicate = HKQuery.predicateForSamples(withStart: dayStart, end: dayEnd, options: .strictStartDate)
-            let sortDescriptor = NSSortDescriptor(key: HKSampleSortIdentifierEndDate, ascending: false)
-            
-            let query = HKSampleQuery(sampleType: rhrType,
-                                      predicate: predicate,
-                                      limit: 1,
-                                      sortDescriptors: [sortDescriptor]) { _, samples, _ in
-                if let sample = samples?.first as? HKQuantitySample {
-                    let bpm = sample.quantity.doubleValue(for: HKUnit.count().unitDivided(by: .minute()))
-                    dailyRHRValues.append(bpm)
-                } else {
-                    dailyRHRValues.append(0.0)
-                }
-                group.leave()
-            }
-            
-            self.healthStore.execute(query)
-        }
-        
-        group.notify(queue: .main) {
-            completion(dailyRHRValues)
-        }
-    }
-    
+
     func calculateBaseline() {
-        self.getHistoricalRestingHRData { dailyRHRValues in
-            if !dailyRHRValues.isEmpty {
-                let totalRHR = dailyRHRValues.reduce(0, +)
-                let newBaseline = totalRHR / Double(dailyRHRValues.count)
-                
-                self.baseline = newBaseline
-                self.localDataManager.saveBaseline(for: "restingHR", value: newBaseline)
-            } else {
-                let defaultBaseline = 60.0
-                self.baseline = defaultBaseline
-                self.localDataManager.saveBaseline(for: "restingHR", value: defaultBaseline)
-            }
-        }
+        baseline = 60.0
     }
 
     func normalisedValue() -> Double {

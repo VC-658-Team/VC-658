@@ -15,7 +15,7 @@ struct FatigueManagementSystemWatchApp: App {
     var body: some Scene {
         WindowGroup {
             if ready {
-                ContentView()
+                ContentView(service: service)
                 
             } else {
                 LoadingView()
