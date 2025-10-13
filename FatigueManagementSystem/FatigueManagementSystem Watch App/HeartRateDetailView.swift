@@ -6,31 +6,47 @@
 //
 
 import SwiftUI
+import HealthKit
 
 struct HeartRateDetailView: View {
+    @StateObject private var heartRateService: HeartRateDataService
+    
+    init() {
+        // Initialize with the shared health store and resting HR metric
+        let healthStore = HKHealthStore()
+        let restingHRMetric = RestingHeartRateMetric(weight: 3.0, healthStore: healthStore)
+        _heartRateService = StateObject(wrappedValue: HeartRateDataService(healthStore: healthStore, restingHRMetric: restingHRMetric))
+    }
+    
     var body: some View {
         // A TabView is used to create a swipeable interface between different views.
         // The .page style is essential for the watchOS look and feel.
         TabView {
             // Each view placed inside the TabView becomes a separate, swipeable page.
-            DailyHeartRateView()
-            WeeklyAverageBPMView()
-            MonthlyAverageBPMView()
+            DailyHeartRateView(heartRateService: heartRateService)
+            WeeklyAverageBPMView(heartRateService: heartRateService)
+            MonthlyAverageBPMView(heartRateService: heartRateService)
         }
         // This modifier tells the TabView to behave like pages in a book.
         // The indexDisplayMode automatically adds the little dots at the bottom.
         .tabViewStyle(.page(indexDisplayMode: .automatic))
+        .task {
+            // Load all heart rate data when the view appears
+            await heartRateService.fetchCurrentHeartRate()
+            await heartRateService.fetchDailyHeartRateData()
+            await heartRateService.fetchWeeklyAverages()
+            await heartRateService.fetchMonthlyAverages()
+        }
     }
 }
 
 // MARK: - Daily View
 // The original content of HeartRateDetailView has been moved into this separate struct
 // to keep the code clean and organized.
-private struct DailyHeartRateView: View {
+struct DailyHeartRateView: View {
     // MARK: - Properties
+    @ObservedObject var heartRateService: HeartRateDataService
     
-    private let graphData: [CGFloat] = [0.45, 0.6, 0.3, 0.7, 0.85, 0.5, 0.95, 0.4, 0.65]
-
     private var dayFormatter: DateFormatter {
         let formatter = DateFormatter()
         formatter.dateFormat = "EEEE"
@@ -42,6 +58,20 @@ private struct DailyHeartRateView: View {
         formatter.dateFormat = "d MMM"
         return formatter
     }
+    
+    private var graphData: [CGFloat] {
+        heartRateService.dailyHeartRateData.map { CGFloat($0.normalizedValue) }
+    }
+    
+    private var currentBPM: String {
+        if heartRateService.isLoading {
+            return "--"
+        } else if heartRateService.currentHeartRate > 0 {
+            return "\(Int(heartRateService.currentHeartRate))"
+        } else {
+            return "--"
+        }
+    }
 
     // MARK: - Body
     
@@ -49,7 +79,7 @@ private struct DailyHeartRateView: View {
         VStack(alignment: .leading, spacing: 4) {
             // Header (Current BPM and Time)
             HStack {
-                Text("72")
+                Text(currentBPM)
                     .font(.system(size: 40, weight: .semibold))
                     .baselineOffset(-4) +
                 Text(" bpm")
@@ -66,8 +96,19 @@ private struct DailyHeartRateView: View {
                 Rectangle()
                     .frame(height: 1)
                     .foregroundColor(.blue.opacity(0.6))
-                LineGraph(dataPoints: graphData)
-                    .stroke(Color.red, lineWidth: 2.5)
+                
+                if heartRateService.isLoading {
+                    ProgressView()
+                        .progressViewStyle(CircularProgressViewStyle(tint: .red))
+                        .scaleEffect(0.8)
+                } else if !graphData.isEmpty {
+                    LineGraph(dataPoints: graphData)
+                        .stroke(Color.red, lineWidth: 2.5)
+                } else {
+                    Text("No data")
+                        .font(.caption)
+                        .foregroundColor(.gray)
+                }
             }
             .frame(height: 70)
             .padding(.bottom, 4)
