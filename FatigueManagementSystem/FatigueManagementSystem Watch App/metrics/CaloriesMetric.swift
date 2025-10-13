@@ -94,7 +94,7 @@ class CaloriesMetric: FatigueMetric {
 
         let group = DispatchGroup()
 
-        for day in 1..<numberOfDays {
+        for day in 0..<numberOfDays {
             guard let dayStart = calendar.date(byAdding: .day, value: -day, to: endDate),
                   let dayEnd = calendar.date(byAdding: .day, value: 1, to: dayStart) else {
                 continue

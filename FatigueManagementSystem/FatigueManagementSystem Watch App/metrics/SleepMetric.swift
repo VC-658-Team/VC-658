@@ -136,7 +136,7 @@ class SleepMetric: FatigueMetric {
         
         let group = DispatchGroup()
         
-        for i in 1..<numberOfDays {
+        for i in 0..<numberOfDays {
             guard let dayStart = calendar.date(byAdding: .day, value: -i, to: endDate),
                   let dayEnd = calendar.date(byAdding: .day, value: 1, to: dayStart) else {
                 continue
