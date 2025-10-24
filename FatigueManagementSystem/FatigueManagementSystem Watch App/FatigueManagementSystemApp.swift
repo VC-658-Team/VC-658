@@ -10,13 +10,8 @@ import HealthKit
 @main
 struct FatigueManagementSystemWatchApp: App {
     let service = FatigueService()
-    
-    @WKExtensionDelegateAdaptor(ExtensionDelegate.self) var extensionDelegate
-    
     @State private var ready = false
-    init() {
-        extensionDelegate.fatigueService = service
-    }
+    
     var body: some Scene {
         WindowGroup {
             if ready {

@@ -6,7 +6,6 @@
 //
 
 import HealthKit
-import WatchKit
 import UserNotifications
 
 class FatigueService {
@@ -16,9 +15,6 @@ class FatigueService {
     private var notificationsAuthed: Bool = false
     var authorised = false
     @Published var ready = false
-    
-    // Task ID for watch to mark tasks with
-    let fatigueTaskID = "com.motorola.fatigueUpdate"
     
     func start(completion: @escaping (Bool) -> Void) {
         requestHKAuthorization { authorised in
@@ -110,15 +106,11 @@ class FatigueService {
             if let error = error {
                 print("Observer error: \(error)")
             }
-            WKExtension.shared().scheduleBackgroundRefresh(
-                withPreferredDate: Date(),
-                userInfo: self.fatigueTaskID as NSSecureCoding & NSObjectProtocol
-            ) { error in
-                if let error = error {
-                    print("Failed to schedule background task: \(error)")
-                }
+            
+            self.calculateScore {
                 completionHandler()
             }
+            
         }
         self.healthstore.execute(query)
 
@@ -129,9 +121,9 @@ class FatigueService {
         calculator.calculateScore { [weak self] in
             guard let self = self else { return }
             triggerNotification()
-//            if calculator.fatigueScore > 80 && notificationsAuthed {
-//                triggerNotification()
-//            }
+            if calculator.fatigueScore > 80 && notificationsAuthed {
+                triggerNotification()
+            }
             completion()
         }
     }
