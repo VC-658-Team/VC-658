@@ -8,6 +8,7 @@ import SwiftUI
 import HealthKit
 struct ContentView: View {
     @StateObject private var viewModel: FatigueModel
+    @Environment(\.scenePhase) private var scenePhase
     // CHANGED: Converted to @State variables to allow dynamic updates
     @State private var stressLevel: Double = 0.65
     @State private var stressValue: Int = 1
@@ -99,7 +100,10 @@ struct ContentView: View {
                         // Convert the Int score (10-100) to a Double for the gauge (0.1-1.0)
                         self.stressLevel = Double(self.stressValue) / 100.0
                     }
-                }
+                }.onChange(of: scenePhase, initial: true) { _, newPhase in
+                    if newPhase == .active {
+                        viewModel.getFatigueScore()
+                    }}
                             
             }
         }

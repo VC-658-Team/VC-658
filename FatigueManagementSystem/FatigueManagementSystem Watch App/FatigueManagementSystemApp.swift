@@ -10,28 +10,26 @@ import HealthKit
 @main
 struct FatigueManagementSystemWatchApp: App {
     let service = FatigueService()
-    
-    @WKExtensionDelegateAdaptor(ExtensionDelegate.self) var extensionDelegate
-    
     @State private var ready = false
-    init() {
-        extensionDelegate.fatigueService = service
-    }
+    
     var body: some Scene {
         WindowGroup {
-            if ready {
-                ContentView(service: service)
+            Group {
                 
-            } else {
-                LoadingView()
-                    .task {
-                        let success = await withCheckedContinuation { continuation in
-                            service.start { ready in
-                                continuation.resume(returning: ready)
-                            }
-                        }
-                        ready = success
+                if ready {
+                    ContentView(service: service)
+                    
+                } else {
+                    LoadingView()
+                }
+            }
+            .task {
+                let success = await withCheckedContinuation { continuation in
+                    service.start { ready in
+                        continuation.resume(returning: ready)
                     }
+                }
+                ready = success
             }
         }
     }

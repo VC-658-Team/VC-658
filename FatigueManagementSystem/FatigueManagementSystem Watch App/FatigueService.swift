@@ -14,12 +14,10 @@ class FatigueService {
     public let healthstore = HKHealthStore()
     public var calculator = DefaultFatigueCalculator()
     private var notificationsAuthed: Bool = false
+    private var lastCollected: Date?
     var authorised = false
     @Published var ready = false
-    
-    // Task ID for watch to mark tasks with
-    let fatigueTaskID = "com.motorola.fatigueUpdate"
-    
+        
     func start(completion: @escaping (Bool) -> Void) {
         requestHKAuthorization { authorised in
             if authorised {
@@ -30,7 +28,7 @@ class FatigueService {
                         self.notificationsAuthed = true
                     }
                 }
-                    
+                self.lastCollected = Date()
                 // Start observers
                 // Set ready status if successful
                 self.startObservers { success in
@@ -94,44 +92,69 @@ class FatigueService {
     }
     
     func startObservers(completion: @escaping (Bool) -> Void) {
-        guard let type = HKQuantityType.quantityType(forIdentifier: .restingHeartRate) else {
+        guard
+            let rhrType = HKQuantityType.quantityType(forIdentifier: .restingHeartRate),
+            let stepType = HKQuantityType.quantityType(forIdentifier: .stepCount),
+            let energyType = HKQuantityType.quantityType(forIdentifier: .activeEnergyBurned)
+        else {
             completion(false)
             return
         }
-        healthstore.enableBackgroundDelivery(for: type, frequency: .immediate) { success, error in
-            if !success {
-                print("Failed to enable background deliver: \(String(describing: error))")
-                completion(false)
-                return
-            }
-        }
+        let sampleTypes: [HKSampleType] =  [
+            rhrType,
+            stepType,
+            energyType
+        ]
         
-        let query = HKObserverQuery(sampleType: type, predicate: nil) { _, completionHandler, error in
-            if let error = error {
-                print("Observer error: \(error)")
-            }
-            WKExtension.shared().scheduleBackgroundRefresh(
-                withPreferredDate: Date(),
-                userInfo: self.fatigueTaskID as NSSecureCoding & NSObjectProtocol
-            ) { error in
-                if let error = error {
-                    print("Failed to schedule background task: \(error)")
+        for type in sampleTypes {
+            healthstore.enableBackgroundDelivery(for: type, frequency: .immediate) { success, error in
+                if !success {
+                    print("Failed to enable background deliver: \(String(describing: error))")
+                    completion(false)
+                    return
                 }
-                completionHandler()
             }
-        }
-        self.healthstore.execute(query)
+            
+            let query = HKObserverQuery(sampleType: type, predicate: nil) { _, completionHandler, error in
+                if let error = error {
+                    print("Observer error: \(error)")
+                    completionHandler()
+                    return
+                }
+                print("data received")
+                
+                let shouldRecalculate: Bool
+                
+                if self.lastCollected == nil || self.lastCollected!.timeIntervalSinceNow < -60 * 10 {
+                    shouldRecalculate = true
+                } else {
+                    shouldRecalculate = false
+                }
+                
+                if shouldRecalculate {
+                    self.lastCollected = Date()
+                    
+                    DispatchQueue.global(qos: .background).async {
+                        self.calculateScore {
+                            completionHandler()
+                        }
+                    }
+                } else {
+                    completionHandler()
+                }
+            }
+            self.healthstore.execute(query)
 
+        }
         completion(true)
     }
     
     func calculateScore(completion: @escaping () -> Void) {
         calculator.calculateScore { [weak self] in
             guard let self = self else { return }
-            triggerNotification()
-//            if calculator.fatigueScore > 80 && notificationsAuthed {
-//                triggerNotification()
-//            }
+            if calculator.fatigueScore > 80 && notificationsAuthed {
+                triggerNotification()
+            }
             completion()
         }
     }
@@ -140,7 +163,7 @@ class FatigueService {
         let content = UNMutableNotificationContent()
         content.title = "Fatigue Warning"
         content.body = "You are predicted to be fatigued"
-        content.sound = .default
+        content.sound = UNNotificationSound.default
         
         let trigger = UNTimeIntervalNotificationTrigger(timeInterval: 2, repeats: false)
         
@@ -154,6 +177,8 @@ class FatigueService {
             UNUserNotificationCenter.current().add(request) { error in
                 if let error = error {
                     print("Failed to schedule notification: \(error)")
+                } else {
+                    WKInterfaceDevice.current().play(.notification)
                 }
             }
         }
