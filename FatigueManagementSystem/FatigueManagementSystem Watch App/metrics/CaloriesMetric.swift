@@ -2,12 +2,15 @@ import Foundation
 import HealthKit
 
 class CaloriesMetric: FatigueMetric {
+    
     let name = "calories"
     let weight: Double
     var baseline: Double
     var rawValue: Double
     let healthStore: HKHealthStore
     private let localDataManager = LocalDataManager.shared
+    
+    let healthStore: HKHealthStore
     
     init(weight: Double, healthStore: HKHealthStore) {
         self.weight = weight
@@ -29,6 +32,14 @@ class CaloriesMetric: FatigueMetric {
         self.getTodayCalories { [weak self] calories in
             self?.rawValue = calories
             completion()
+        self.getRawValue()
+    }
+    
+    func getRawValue() {
+        self.rawValue = 0.0
+        
+        self.getTodayCalories { calories in
+            self.rawValue = calories
         }
     }
     
@@ -93,6 +104,8 @@ class CaloriesMetric: FatigueMetric {
         
         for day in 0..<numberOfDays {
             guard let dayStart = calendar.date(byAdding: .day, value: -day, to: endDate),
+        for i in 0..<numberOfDays {
+            guard let dayStart = calendar.date(byAdding: .day, value: -i, to: endDate),
                   let dayEnd = calendar.date(byAdding: .day, value: 1, to: dayStart) else {
                 continue
             }
@@ -106,6 +119,7 @@ class CaloriesMetric: FatigueMetric {
                 quantitySamplePredicate: predicate,
                 options: .cumulativeSum
             ) { _, result, _ in
+            ) { _, result, error in
                 
                 let calories = result?.sumQuantity()?.doubleValue(for: HKUnit.kilocalorie()) ?? 0
                 dailyCalories.append(calories)
@@ -125,6 +139,7 @@ class CaloriesMetric: FatigueMetric {
         
         // More calories burned = more exertion = more fatigue
         let deviation = (rawValue - baseline) / baseline
+        let deviation = (baseline - rawValue) / baseline
         return max(0, min(1, deviation))
     }
 }

@@ -42,6 +42,30 @@ class FatigueModel: ObservableObject {
             restingHRString = "\(Int(rhr)) bpm"
         } else {
             restingHRString = "-- bpm"
+    func getStepsString() -> String {
+        guard let stepsMetric = calculator.Metrics["steps"] else {
+            return "0 steps"
+        }
+        let steps = Int(stepsMetric.rawValue)
+        if steps >= 1000 {
+            return String(format: "%.1fK steps", Double(steps) / 1000)
+        } else {
+            return "\(steps) steps"
+        }
+    }
+    
+    func getCaloriesString() -> String {
+        guard let caloriesMetric = calculator.Metrics["calories"] else {
+            return "0 cal"
+        }
+        let calories = Int(caloriesMetric.rawValue)
+        return "\(calories) cal"
+    }
+    
+    func getFatigueScore()-> Int {
+        fatigueScore = calculator.getFatigueScore()
+        if(fatigueScore > 80) {
+            triggerNotification()
         }
     }
 
@@ -80,6 +104,20 @@ class FatigueModel: ObservableObject {
             guard let self = self else { return }
             DispatchQueue.main.async {
                 self.fatigueScore = self.service.calculator.fatigueScore
+        
+        
+        let readTypes: Set<HKObjectType> = [
+            HKQuantityType.quantityType(forIdentifier: .restingHeartRate)!,
+            HKObjectType.categoryType(forIdentifier: .sleepAnalysis)!,
+            HKQuantityType.quantityType(forIdentifier: .stepCount)!,
+            HKQuantityType.quantityType(forIdentifier: .activeEnergyBurned)!
+        ]
+        
+        healthstore.requestAuthorization(toShare: nil, read: readTypes) { success, error in
+            if let error = error {
+                print("Healthkit authorization errorL \(error.localizedDescription)")
+            }
+            else {
                 
                 self.setSleepString()
                 self.setRestingHRString()
@@ -88,6 +126,19 @@ class FatigueModel: ObservableObject {
                 
                 self.localDataManager.saveDailyFatigueScore(self.fatigueScore)
                 self.localDataManager.clearOldData()
+                
+                // works 
+                DispatchQueue.main.async {
+                    self.calculator.addMetric(key: "sleep",
+                                              value: SleepDurationMetric(weight: 4.0, healthStore: self.healthstore))
+                    self.calculator.addMetric(key: "steps",
+                                              value: StepsMetric(weight: 2.0, healthStore: self.healthstore))
+                    self.calculator.addMetric(key: "calories",
+                                              value: CaloriesMetric(weight: 1.5, healthStore: self.healthstore))
+                    self.authorised = true
+                    
+                    
+                }
             }
         }
     }
