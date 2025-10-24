@@ -131,4 +131,3 @@ class StepsMetric: FatigueMetric {
         return max(0, min(1, deviation))
     }
 }
-

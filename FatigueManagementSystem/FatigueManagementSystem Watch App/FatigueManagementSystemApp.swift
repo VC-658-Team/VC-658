@@ -14,19 +14,22 @@ struct FatigueManagementSystemWatchApp: App {
     
     var body: some Scene {
         WindowGroup {
-            if ready {
-                ContentView(service: service)
+            Group {
                 
-            } else {
-                LoadingView()
-                    .task {
-                        let success = await withCheckedContinuation { continuation in
-                            service.start { ready in
-                                continuation.resume(returning: ready)
-                            }
-                        }
-                        ready = success
+                if ready {
+                    ContentView(service: service)
+                    
+                } else {
+                    LoadingView()
+                }
+            }
+            .task {
+                let success = await withCheckedContinuation { continuation in
+                    service.start { ready in
+                        continuation.resume(returning: ready)
                     }
+                }
+                ready = success
             }
         }
     }

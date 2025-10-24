@@ -75,7 +75,7 @@ class FatigueModel: ObservableObject {
     }
     
     func getFatigueScore() {
-        service.calculateScore { [weak self] in
+        service.calculator.calculateScore { [weak self] in
             guard let self = self else { return }
             DispatchQueue.main.async {
                 self.fatigueScore = self.service.calculator.fatigueScore
