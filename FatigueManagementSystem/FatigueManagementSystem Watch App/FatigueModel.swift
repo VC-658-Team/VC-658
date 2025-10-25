@@ -14,6 +14,7 @@ class FatigueModel: ObservableObject {
     @Published var authorised = false
     @Published var fatigueScore = 0
     
+    // test
     @Published var sleepString = "Score: 0"
     @Published var restingHRString = "-- bpm"
     @Published var stepsString = "0 steps"
@@ -87,7 +88,6 @@ class FatigueModel: ObservableObject {
                 
                 self.localDataManager.saveDailyFatigueScore(self.fatigueScore)
                 self.localDataManager.clearOldData()
-                
             }
         }
     }
