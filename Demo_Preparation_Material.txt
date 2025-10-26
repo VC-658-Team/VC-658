@@ -1,0 +1,81 @@
+FATIGUE RISK MANAGEMENT SYSTEM - DEMO PREPARATION MATERIAL
+================================================================
+
+PROJECT OVERVIEW
+================
+The Fatigue Risk Management System is a comprehensive Apple Watch application designed for Motorola Solutions' capstone project. This iOS watchOS app monitors user fatigue levels by analyzing four key health metrics: sleep quality (40% weight), resting heart rate (30% weight), daily steps (15% weight), and calories burned (15% weight). The system integrates with Apple HealthKit to collect real-time health data, calculates a weighted fatigue score (0-100), and provides visual feedback through a circular gauge interface. When fatigue levels exceed 80%, the app triggers notifications to alert users about potential fatigue risks. The application uses CoreData for local storage, implements background processing for continuous monitoring, and follows a modular architecture with separate metric classes for each health parameter.
+
+STEPS IMPLEMENTATION DETAILS
+============================
+
+StepsMetric Class Features:
+- Data Source: Integrates with Apple HealthKit's HKQuantityType.stepCount to fetch daily step counts
+- Baseline Calculation: Automatically calculates 30-day average step count as baseline (default: 10,000 steps)
+- Real-time Updates: Fetches current day's step count from midnight to present time
+- Weight in Fatigue Calculation: 15% contribution to overall fatigue score
+- Normalization Logic: Uses deviation formula (baseline - rawValue) / baseline where lower steps = higher fatigue
+- Data Persistence: Integrates with LocalDataManager for baseline storage and retrieval
+- Error Handling: Gracefully handles HealthKit authorization failures and data unavailability
+
+Key Methods:
+- getTodaySteps(): Queries HealthKit for current day's cumulative step count
+- getHistoricalStepsData(): Retrieves 30 days of historical data for baseline calculation
+- calculateBaseline(): Computes average steps from historical data
+- normalisedValue(): Returns normalized score (0-1) for fatigue calculation
+
+Technical Implementation:
+- Uses HKStatisticsQuery with cumulativeSum option for accurate daily totals
+- Implements DispatchGroup for concurrent historical data retrieval
+- Calendar-based date calculations for precise day boundaries
+- Memory-safe completion handlers with weak self references
+
+CALORIES IMPLEMENTATION DETAILS
+===============================
+
+CaloriesMetric Class Features:
+- Data Source: Uses HealthKit's HKQuantityType.activeEnergyBurned for active calories tracking
+- Baseline Calculation: Calculates 30-day average calories burned (default: 500 calories)
+- Real-time Updates: Fetches current day's active energy burned from midnight to present
+- Weight in Fatigue Calculation: 15% contribution to overall fatigue score
+- Normalization Logic: Uses deviation formula (baseline - rawValue) / baseline where lower calories = higher fatigue
+- Data Persistence: Integrates with LocalDataManager for baseline storage and retrieval
+- Error Handling: Handles HealthKit authorization and data retrieval failures
+
+Key Methods:
+- getTodayCalories(): Queries HealthKit for current day's active energy burned
+- getHistoricalCaloriesData(): Retrieves 30 days of historical calorie data
+- calculateBaseline(): Computes average calories from historical data
+- normalisedValue(): Returns normalized score (0-1) for fatigue calculation
+
+Technical Implementation:
+- Uses HKUnit.kilocalorie() for proper energy unit conversion
+- Implements async completion handlers for non-blocking data retrieval
+- Calendar-based date range calculations for accurate daily totals
+- Error handling with fallback to default values
+
+INTEGRATION POINTS
+==================
+- Both metrics are registered in FatigueService.requestHKAuthorization() with weights 2.0 (steps) and 1.5 (calories)
+- Display strings are formatted in FatigueModel with "K" notation for thousands (steps) and simple integer display (calories)
+- Both metrics participate in the weighted fatigue score calculation in DefaultFatigueCalculator
+- Real-time updates trigger through HealthKit observer queries in background processing
+- Data persistence managed through LocalDataManager singleton pattern
+
+ARCHITECTURE HIGHLIGHTS
+=======================
+- Protocol-based design with FatigueMetric protocol for consistent metric behavior
+- Weighted scoring system allowing configurable importance of each health metric
+- Background processing for continuous health monitoring without user interaction
+- Modular metric classes enabling easy addition of new health parameters
+- SwiftUI-based user interface with real-time data binding
+- CoreData integration for local data persistence and historical analysis
+
+DEMO TALKING POINTS
+===================
+1. "I implemented the Steps and Calories tracking components using Apple HealthKit integration"
+2. "The system automatically calculates personalized baselines from 30 days of historical data"
+3. "Both metrics contribute 15% each to the overall fatigue score calculation"
+4. "Real-time data collection happens in the background without user intervention"
+5. "The normalization algorithm converts raw health data into comparable fatigue indicators"
+6. "Error handling ensures the app continues functioning even when health data is unavailable"
+7. "The modular design allows easy integration with the existing fatigue calculation system"
