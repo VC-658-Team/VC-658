@@ -187,6 +187,9 @@ class SleepMetric: FatigueMetric {
     }
     
     func normalisedValue() -> Double {
+        guard baseline > 0 else { return 0.0 }
+        guard rawValue > 0 else { return rawValue }
+        
         return 1 - rawValue
     }
     
