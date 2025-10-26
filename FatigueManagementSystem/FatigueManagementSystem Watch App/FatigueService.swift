@@ -178,7 +178,9 @@ class FatigueService {
                 if let error = error {
                     print("Failed to schedule notification: \(error)")
                 } else {
-                    WKInterfaceDevice.current().play(.notification)
+                    if WKExtension.shared().applicationState != .active {
+                        WKInterfaceDevice.current().play(.notification)
+                    }
                 }
             }
         }
