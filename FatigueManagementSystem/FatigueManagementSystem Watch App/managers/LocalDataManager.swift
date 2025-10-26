@@ -128,7 +128,6 @@ class LocalDataManager {
     func getFatigueTrend() -> [Int] {
         let scores = getDailyFatigueScores()
         let calendar = Calendar.current
-        let sevenDaysAgo = calendar.date(byAdding: .day, value: -7, to: Date()) ?? Date()
         
         var trend: [Int] = []
         for day in 0..<7 {
@@ -149,5 +148,3 @@ class LocalDataManager {
         userDefaults.set(encodedData, forKey: Keys.dailyFatigueScores)
     }
 }
-
-extension Date: Codable {}
