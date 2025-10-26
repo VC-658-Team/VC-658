@@ -124,9 +124,10 @@ class StepsMetric: FatigueMetric {
     }
     
     func normalisedValue() -> Double {
-        guard baseline > 0 else { return 0.0 }
-        
-        let deviation = (baseline - rawValue) / baseline
-        return max(0, min(1, deviation))
+            guard baseline > 0 else { return 0.0 }
+        guard rawValue > 0 else { return rawValue }
+
+        let deviation = (rawValue - baseline) / baseline
+        return max(-1, min(1, deviation))
     }
 }

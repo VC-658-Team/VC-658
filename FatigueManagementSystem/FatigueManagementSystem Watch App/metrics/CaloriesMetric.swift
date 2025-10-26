@@ -122,9 +122,9 @@ class CaloriesMetric: FatigueMetric {
     
     func normalisedValue() -> Double {
         guard baseline > 0 else { return 0.0 }
-        
+        guard rawValue > 0 else { return rawValue }
         // More calories burned = more exertion = more fatigue
-        let deviation = (baseline - rawValue) / baseline
-        return max(0, min(1, deviation))
+        let deviation = (rawValue - baseline) / baseline
+        return max(-1, min(1, deviation))
     }
 }

@@ -34,7 +34,7 @@ class DefaultFatigueCalculator: FatigueCalculator {
          for metric in allMetrics {
              group.enter()
              metric.getRawValue {
-                 print("Values: \(metric.name) raw=\(metric.rawValue), norm=\(metric.normalisedValue())")
+                 print("Values: \(metric.name) raw=\(metric.rawValue), norm=\(metric.normalisedValue()), baseline=\(metric.baseline)")
                  
                  group.leave()
              }
@@ -52,8 +52,8 @@ class DefaultFatigueCalculator: FatigueCalculator {
              }
              
              let weightedTotal = allMetrics.map { $0.weightedScore() }.reduce(0, +)
-             self.fatigueScore = Int((weightedTotal / totalWeight) * 100)
-
+             self.fatigueScore = max(0, min(100, Int((weightedTotal / totalWeight) * 100)))
+                
              completion()
          }
      }

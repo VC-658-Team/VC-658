@@ -109,6 +109,9 @@ class RestingHeartRateMetric: FatigueMetric {
     }
 
     func normalisedValue() -> Double {
+        guard baseline > 0 else { return 0.0 }
+        guard rawValue > 0 else { return rawValue }
+
         let minHR = 40.0, maxHR = 100.0
         let clamped = max(min(rawValue, maxHR), minHR)
         return (clamped - minHR) / (maxHR - minHR)
