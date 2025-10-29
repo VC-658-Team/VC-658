@@ -1,7 +1,7 @@
 # VC-658
 Fatigue Risk Management System - iOS App for Motorola Solutions Capstone Project
 
-Release Note (Implementation timeline)
+Release Notes (Implementation timeline)
 - 1 Created Fatigue Calculator that stores metric and provides calculated score
 - 2 Diagrams of the System placed in accompaniment
 - 3 Code infrastructure implemented in a Protocol structure
@@ -12,8 +12,9 @@ Release Note (Implementation timeline)
 - 8 Resting Heart and Sleep metrics complete against point (7)
 - 9 Implemented Health app read data authorisation on launch
 - 10 Steps and Calories metrics complete against point (7)
-
--- This makes the first set of implementation (The Fatigue Calculator is functional and the metrics all retrieve data) displayable on a simulator --
+---
+This makes the first set of implementation (The Fatigue Calculator is functional and the metrics all retrieve data) displayable on a simulator
+---
 
 - 11 Implementation of unit test cases
 - 12 Implementation of observers to start getting updates on metric data on the watch regularly
