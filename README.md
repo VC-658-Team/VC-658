@@ -1,5 +1,5 @@
 # VC-658
-Fatigue Risk Management System - iOS App for Motorola Solutions Capstone Project
+#Fatigue Risk Management System - WatchOS App for Motorola Solutions
 ---
 This makes the first set of implementation (The Fatigue Calculator is functional and the metrics all retrieve data) displayable on a simulator
 ---
