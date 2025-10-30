@@ -1,0 +1,20 @@
+@startuml background-calculation
+title Background Calculation
+
+Actor User
+participant "Fatigue Service" as service
+participant "Fatigue Calculator" as fatigue
+participant "Data Metrics" as data
+participant "Local Data Manager" as storage
+
+User -> service: Observer sample retrieved
+service -> fatigue: Recalculate fatigue
+data -> fatigue: Collect new data
+fatigue -> fatigue : calculate fatigue
+fatigue -> storage: Store daily score
+fatigue -> service : Return calculated data
+alt Fatigue threshold passed
+    service-> User : Create notification
+end
+
+@enduml

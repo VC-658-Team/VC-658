@@ -1,0 +1,70 @@
+@startuml data-controller-component-diagram
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Component.puml
+
+title "Data Controller Component Diagram"
+
+Container_Boundary(controller, "Data Controller") {
+    Component(metric, "Data Metric", "An individual fatigue metric providing related data")
+    Component(fatigue, "Fatigue Calculator", "Calculated fatigue level and initiates a notification")
+    Component(dbGateway, "Database Manager", "Provides Interface for CoreData")
+}
+
+Component_Ext(coreData, "CoreData Persistent Storage", "persistant storage for system")
+Component_Ext(ui, "User Interface", "Displays gathered data")
+Component_Ext(service, "Notification Service", "creates a notification")
+
+Rel_U(dbGateway, coreData, "Communicate with database")
+
+Rel(dbGateway, fatigue, "Persistant storage")
+Rel(metric, fatigue, "Collected data")
+Rel(fatigue, ui, "Passes calculated/collected data")
+Rel(fatigue, service, "Creates notification for high fatigue");
+
+
+
+@enduml
+
+
+
+@startuml container-diagram
+!include  https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+title "System Container Diagram"
+
+
+Person(user, "User", "Using the system")
+
+System_Boundary(serviceCont, "App Service") {
+    Container(calculator, "Fatigue Calculator", "Combines data into fatigue score") 
+    Container(service, "Central Controller", "Manages data movement through system") 
+    Container(sleep, "Sleep", "Updates sleep data")
+    Container(rhr, "Resting Heart Rate", "Updates sleep data")
+    Container(steps, "Steps", "Updates sleep data")
+    Container(energy, "Energy", "Updates active energy data")
+    Container(storage, "Local Data Manager", "stores baseline and historical fatigue data")
+}
+
+Container(ui, "App Interface", "Provides interface to user") 
+    
+Container_Ext(healthkit, "Apple HealthKit", "Historical repository of health data")
+
+' Internal relations
+Rel_U(ui, user, "Interacts with app / passively generates data")
+Rel_U(sleep, service, "Sleep data")
+Rel_U(rhr, service, "Heart rate data")
+Rel_U(steps, service, "Steps data")
+Rel_U(energy, service, "Energy data")
+
+Rel_L(calculator, service, "Provides calculated data")
+Rel_R(storage, service, "Provides persistant storage")
+
+Rel_U(service, ui, "Provides fatigue data")
+
+' External relations
+Rel_U(healthkit, sleep, "Sleep Data")
+Rel_U(healthkit, rhr, "Heart rate Data")
+Rel_U(healthkit, steps, "Steps Data")
+Rel_U(healthkit, energy, "Energy Data")
+
+
+@enduml

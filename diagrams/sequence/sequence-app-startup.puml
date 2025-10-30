@@ -1,0 +1,21 @@
+@startuml startup
+title Startup Sequence
+
+Actor User
+participant "Interface" as interface
+participant "Fatigue Service" as service
+participant "Data Metrics" as data
+participant "Fatigue Calculator" as fatigue
+participant "Local Data Manager" as storage
+
+User -> service: App begins
+service -> service: Start Healthkit observers
+service -> data: Initialise metrics
+storage -> data: Load baseline values
+data -> fatigue: Send data
+fatigue -> fatigue : calculate fatigue
+fatigue -> service : send calculated data
+service -> interface: Update interface
+interface -> User : View details
+
+@enduml 
