@@ -1,45 +1,20 @@
-@startuml Container-diagram
+@startuml container-diagram
 !include  https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
 
-title "Interacting with System"
+title "System Container Diagram"
 
 
 Person(user, "User", "Using the system")
 
 System_Boundary(systemCont, "Fatigue Management System") {
-    Container(app, "App Interface", "Provides interface to user") 
-    Container(data, "Data Controller", "Manages flow of data into system")
-    Container(fatigueProc, "Fatigue Processor", "Determines fatigue level")
-    Container(notifications, "Notification Service", "Provides notification to user")
+    Container(ui, "App Interface", "Provides interface to user") 
+    Container(service, "App Service", "Manages data movement through system") 
 }
 
 Container_Ext(healthkit, "Apple HealthKit", "Historical repository of health data")
-Container_Ext(coreMotion, "Core Motion", "Reports motion-based data")
-Container_Ext(coreLocation, "Core Location", "provides location-related data")
-Container_Ext(weatherkit, "Weatherkit", "Provides weather data")
-Container(background, "Background Trigger Service", "watchOS", "Triggers data updates and fatigue calculations in the background")
 
 ' Internal relations
-Rel(user, app, "Interacts with app / passively generates data")
-Rel(data, app, "Provides data for interface")
-Rel(data, fatigueProc, "Provides data for calculations")
-Rel(fatigueProc, data, "Returns calculated data for storage")
-Rel(fatigueProc, notifications, "Creates notification")
-Rel(fatigueProc, app, "Provides calculated data")
-Rel(notifications, user, "Receives fatigue warnings")
-
-
-' External relations
-
-Rel(healthkit, data, "Provides health data")
-Rel(coreMotion, data, "Provides Motion data")
-Rel(coreLocation, data, "Provides location data")
-Rel(weatherkit, data, "Provides weather data")
-
-
-'Background processes
-Rel(background, data, "Wakes Data Controller to collect/aggregate new data")
-Rel(background, fatigueProc, "Triggers recalculation of fatigue score")
-
-
+Rel_U(ui, user, "Interacts with app / passively generates data")
+Rel_U(service, ui, "Provides fatigue and user data")
+Rel_U(healthkit, service, "Data input into system")
 @enduml
