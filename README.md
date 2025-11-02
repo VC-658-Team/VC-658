@@ -9,12 +9,12 @@ Our project is to create a smartwatch based application that leverages health tr
 
 ### App Infrastructure
 Our app infrastructure revolves around a central service class, that manages the flow of data between the interface, data providers, and local storage.
-<img src="assets/container-diagram.png">
+<img src="assets/container-diagram.png">  
 
 During app startup, the service passes the active metrics to the fatigue calculator, which contains them in a dictionary. Each metric conforms to a defined protocol, that specifies the methods and attributes for its class. This allows the calculator to treat each metric as a generic type, ensuring consistency and flexibility across different data sources. Instead, this process can occur once a day, when the watch is charging or when the user is inactive. 
 <img src="assets/startup.png">
 The app service also manages staging background tasks, completed using Healthkit Observer queries (figure 3). When an observer query returns a result, it will initiate a recalculation. If the score is above a set threshold, it will trigger a notification to be displayed to the user. When the app is opened, the UI will reflect the new data collected.
-<img src="assets/background-calculation.png">
+<img src="assets/background-calculation.png">  
 
 ### Fatigue Calculator
 Provided the defined calculator follows the correct protocol, different classes can be introduced to define new ways to determine the final fatigue score. Currently, the default method uses the following process:
